@@ -16,6 +16,7 @@ function CandidateList({ candidates }) {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '10px 0px',
+        boxShadow: '0px 10px',
       },
       logo: {
         fontSize: '24px',
@@ -85,9 +86,9 @@ function CandidateList({ candidates }) {
   return (
     <div style={styles.container}>
       <header style={styles.header}>
-  <div style={styles.logo}>Prevote</div>
-  <div style={styles.walletInfo}>0x1231231231231231231231231231312</div>
-</header>
+        <div style={styles.logo}>Prevote</div>
+        <div style={styles.walletInfo}>0x1231231231231231231231231231312</div>
+      </header>
 
       <h1>CANDIDATES</h1>
 
