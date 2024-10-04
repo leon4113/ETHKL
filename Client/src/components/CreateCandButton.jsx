@@ -21,6 +21,7 @@ function CreateCandButton() {
       alignItems: 'center',
       padding: '10px 20px',
       width: '100%',
+      boxShadow: '0px 10px',
     },
     logo: {
       fontSize: '24px',

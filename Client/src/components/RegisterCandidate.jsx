@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function RegisterCandidate({ addCandidate }) {
   const [name, setName] = useState('');
@@ -8,21 +9,29 @@ function RegisterCandidate({ addCandidate }) {
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('walletAddress', walletAddress);
+    formData.append('vision', vision);
+    formData.append('image', image);
 
-    const newCandidate = {
-      name,
-      walletAddress,
-      vision,
-      image: URL.createObjectURL(image), // Convert image file to a URL
-    };
+    try {
+      const response = await axios.post('http://localhost:3001/candidates/register-candidate', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-    // Add candidate to the list
-    addCandidate(newCandidate);
-
-    // Navigate to the CandidateList page
-    navigate('/potential-candidate');
+      const newCandidate = response.data;
+      addCandidate(newCandidate);
+      navigate('/candidate-list');
+    } catch (error) {
+      console.error('Error submitting candidate:', error);
+      // Handle error (e.g., show error message to user)
+    }
   };
 
   const styles = {
@@ -42,6 +51,7 @@ function RegisterCandidate({ addCandidate }) {
       alignItems: 'center',
       padding: '10px 20px',
       width: '100%',
+      boxShadow: '10px ',
     },
     logo: {
         fontSize: '24px',
