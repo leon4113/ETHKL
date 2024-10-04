@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogAction } from "@/components/ui/alert-dialog"
+import { IDKitWidget, VerificationLevel } from '@worldcoin/idkit';
 
 const candidates = [
   { id: 1, name: 'Ariel', description: 'Vision & Mission' },
@@ -14,7 +15,7 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
   const [rankings, setRankings] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (walletAddress) {
       console.log('Navigating to /vote with address:', walletAddress); // Debug log
       navigate('/vote'); // Navigate once the wallet is connected
@@ -41,10 +42,22 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
     }
   };
 
+  const verifyProof = async (proof) => {
+    // TODO: Calls your implemented server route to verify proof
+    console.log("Proof received:", proof);
+    // You can implement the logic to send this proof to your server here
+  };
+
+  const onSuccess = () => {
+    console.log("Worldcoin Verification Success!");
+    handleConfirm();  // Proceed with vote confirmation after successful Worldcoin verification
+  };
+
   const handleConfirm = () => {
     console.log('Confirmed rankings:', rankings);
     setShowConfirmation(false);
     setRankings({});
+    // Add any other logic after confirming the vote
   };
 
   const handleReset = () => {
@@ -111,6 +124,24 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
             ))}
           </div>
 
+          {/* Worldcoin IDKit Widget */}
+          <IDKitWidget
+                  app_id="app_0b73807a5c00a0829bc90c85ad7f8c72"
+                  action="anonymous-vote"
+                  false
+                  verification_level={VerificationLevel.Device}
+                  handleVerify={verifyProof}
+                  onSuccess={onSuccess}>
+                  {({ open }) => (
+                    <button
+                      onClick={open}
+                      className="w-full bg-black text-white py-3 text-xl mb-5"
+                    >
+                      Verify with World ID
+                    </button>
+                  )}
+                </IDKitWidget>
+
           {/* Submit Button */}
           <button
             className="bg-green-500 text-white px-4 py-2 rounded-lg text-lg sm:text-xl"
@@ -139,7 +170,7 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
                 <p className="text-base sm:text-lg">Check your votes and confirm your placement by clicking the button below</p>
               </AlertDialogDescription>
               <AlertDialogFooter className="p-6 bg-gray-100">
-                <AlertDialogAction onClick={handleConfirm} className="w-full bg-green-500 text-white py-3 text-xl">
+              <AlertDialogAction onClick={handleConfirm} className="w-full bg-green-500 text-white py-3 text-xl">
                   Confirm
                 </AlertDialogAction>
               </AlertDialogFooter>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { useEffect, useState } from "react";
 import voteImage from '../assets/vote.jpg';  // Correct path to the image
