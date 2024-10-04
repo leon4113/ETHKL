@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import voteImage from '../assets/vote.jpg';  // Correct path to the image
 
@@ -127,8 +128,6 @@ function Homepage() {
             One-person-one-vote doesn’t show how much someone cares about an issue. To vote, you need to connect your wallet.
           </p>
           <div style={styles.buttonGroup}>
-            <button style={styles.connectButton}>Connect Wallet</button>
-            <span style={styles.orText}>OR</span>
             <button style={styles.worldcoinButton}>Login with Worldcoin</button>
           </div>
         </div>
