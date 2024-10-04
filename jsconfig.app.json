@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+      "module": "CommonJS",
+      "target": "ESNext"
+    },
+    "include": ["/.js", "/.jsx", "/.ts", "/.tsx"],
+    "exclude": ["node_modules"]
+}
