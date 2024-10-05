@@ -1,0 +1,8 @@
+{
+  "scroll-sepolia": {
+    "RankedChoiceVotingWithHash": {
+      "address": "0xf78fc0F251709F6FE8F0D350339CCbBDA50b4435",
+      "startBlock": 6885224
+    }
+  }
+}

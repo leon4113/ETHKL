@@ -27,13 +27,14 @@ function CandidateDetail() {
       const formData = new FormData(e.target);
       const name = formData.get('name');
       const walletAddress = formData.get('walletAddress');
+      const visionMission = formData.get('visionMission');
   
       // Await the writeContract function to ensure the transaction is complete
       const response = await writeContract({
-        address: '0xCb68Dc49d69b9d4ED73cBA460F03468100e8B9dA',
+        address: '0xf78fc0F251709F6FE8F0D350339CCbBDA50b4435',
         abi,
         functionName: 'addCandidate',
-        args: [name, walletAddress],
+        args: [name, walletAddress, visionMission].
       });
   
       // Check if the transaction was successful
@@ -187,9 +188,9 @@ function CandidateDetail() {
         </div>
 
         <div style={styles.formGroup}>
-          <label style={styles.formLabel}>Vision & Mission</label>
+          <label style={styles.formLabel}>Vision</label>
           <textarea 
-            value={candidate.vision} 
+            value={candidate.visionMission} 
             readOnly 
             style={{...styles.formInput, height: '100px', resize: 'none'}}
           />

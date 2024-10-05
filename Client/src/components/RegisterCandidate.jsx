@@ -5,7 +5,7 @@ import axios from 'axios';
 function RegisterCandidate({ addCandidate }) {
   const [name, setName] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
-  const [vision, setVision] = useState('');
+  const [visionMission, setVisionMission] = useState('');
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ function RegisterCandidate({ addCandidate }) {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('walletAddress', walletAddress);
-    formData.append('vision', vision);
+    formData.append('vision', visionMission);
     formData.append('image', image);
 
     try {
@@ -129,9 +129,10 @@ function RegisterCandidate({ addCandidate }) {
           </div>
 
           <div style={styles.formGroup}>
-            <label style={styles.formLabel}>Vision & Mission</label>
-            <textarea value={vision} onChange={(e) => setVision(e.target.value)} style={styles.formInput}></textarea>
+            <label style={styles.formLabel}>Vision&Mission</label>
+            <textarea value={visionMission} onChange={(e) => setVisionMission(e.target.value)} style={styles.formInput}></textarea>
           </div>
+
 
           <button type="submit" style={styles.submitButton}>Submit</button>
         </form>

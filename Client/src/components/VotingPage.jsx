@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogAction } from "@/components/ui/alert-dialog";
@@ -7,7 +8,6 @@ import { useWriteContract, useWaitForTransactionReceipt, } from 'wagmi'
 import { abi } from '../../abi';
 import axios from 'axios';
 import { keccak256, toUtf8Bytes } from 'ethers';
-
 
 
 
@@ -38,6 +38,7 @@ const CANDIDATES_QUERY = gql`
     }
   }
 `;
+
 
 const VotingPage = ({ walletAddress, disconnectWallet }) => {
   const { data: hash,isPending, writeContract } = useWriteContract()
@@ -87,7 +88,7 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
 
       // Call the smart contract
       writeContract({
-        address: '0x2eAaB92ef4c25Af22A607825e76f51f2aFfB449C',
+        address: '0xf78fc0F251709F6FE8F0D350339CCbBDA50b4435',
         abi,
         functionName: 'submitVote',
         args: [

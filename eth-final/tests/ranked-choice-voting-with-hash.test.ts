@@ -22,10 +22,12 @@ describe("Describe entity assertions", () => {
       "0x0000000000000000000000000000000000000001"
     )
     let name = "Example string value"
+    let visionMission = "Example string value"
     let newCandidateAddedEvent = createCandidateAddedEvent(
       candidateId,
       candidateAddress,
-      name
+      name,
+      visionMission
     )
     handleCandidateAdded(newCandidateAddedEvent)
   })
@@ -57,6 +59,12 @@ describe("Describe entity assertions", () => {
       "CandidateAdded",
       "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
       "name",
+      "Example string value"
+    )
+    assert.fieldEquals(
+      "CandidateAdded",
+      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
+      "visionMission",
       "Example string value"
     )
 

@@ -57,7 +57,7 @@ function App() {
             <Route path="/potential-candidate" element={<PotentialCandidate candidates ={candidates} isConnected={isConnected} walletAddress={walletAddress} />} />
             <Route path="/candidate-detail" element={<CandidateDetail candidates ={candidates} isConnected={isConnected} walletAddress={walletAddress} />} />
             <Route path="/voting" element={<VotingPage isConnected={isConnected} walletAddress={walletAddress} />} />
-            <Route path="/register-success" element={<RegisterSuccess isConnected={isConnected} walletAddress={walletAddress} />} />
+            <Route path="/register-success" element={<RegisterSuccess candidates={candidates} isConnected={isConnected} walletAddress={walletAddress} />} />
             <Route path="/voting-result" element={<VotingResult candidates={candidates} isConnected={isConnected} walletAddress={walletAddress} />} />
           </Routes>
         </Router>

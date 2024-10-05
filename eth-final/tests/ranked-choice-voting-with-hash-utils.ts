@@ -10,7 +10,8 @@ import {
 export function createCandidateAddedEvent(
   candidateId: BigInt,
   candidateAddress: Address,
-  name: string
+  name: string,
+  visionMission: string
 ): CandidateAdded {
   let candidateAddedEvent = changetype<CandidateAdded>(newMockEvent())
 
@@ -31,6 +32,12 @@ export function createCandidateAddedEvent(
   candidateAddedEvent.parameters.push(
     new ethereum.EventParam("name", ethereum.Value.fromString(name))
   )
+  candidateAddedEvent.parameters.push(
+    new ethereum.EventParam(
+      "visionMission",
+      ethereum.Value.fromString(visionMission)
+    )
+  )
 
   return candidateAddedEvent
 }
@@ -44,25 +51,24 @@ export function createElectionFinalizedEvent(): ElectionFinalized {
 }
 
 export function createVoteCastedEvent(
-  voter: Address,
-  firstChoice: BigInt,
-  voteHash: Bytes
+  commitment: Bytes,
+  rankedVotes: Array<BigInt>
 ): VoteCasted {
   let voteCastedEvent = changetype<VoteCasted>(newMockEvent())
 
   voteCastedEvent.parameters = new Array()
 
   voteCastedEvent.parameters.push(
-    new ethereum.EventParam("voter", ethereum.Value.fromAddress(voter))
-  )
-  voteCastedEvent.parameters.push(
     new ethereum.EventParam(
-      "firstChoice",
-      ethereum.Value.fromUnsignedBigInt(firstChoice)
+      "commitment",
+      ethereum.Value.fromFixedBytes(commitment)
     )
   )
   voteCastedEvent.parameters.push(
-    new ethereum.EventParam("voteHash", ethereum.Value.fromFixedBytes(voteHash))
+    new ethereum.EventParam(
+      "rankedVotes",
+      ethereum.Value.fromUnsignedBigIntArray(rankedVotes)
+    )
   )
 
   return voteCastedEvent
