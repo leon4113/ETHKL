@@ -83,6 +83,19 @@ function PotentialCandidate() {
       fontSize: '24px',
       fontWeight: 'bold'
     },
+    button: {
+      backgroundColor: '#4CAF50',
+      border: 'none',
+      color: 'white',
+      padding: '15px 32px',
+      textAlign: 'center',
+      textDecoration: 'none',
+      display: 'inline-block',
+      fontSize: '16px',
+      margin: '20px 2px',
+      cursor: 'pointer',
+      borderRadius: '5px',
+    },
   };
 
   // Helper function to chunk the candidates array into groups of 3
@@ -121,6 +134,13 @@ function PotentialCandidate() {
             </div>
           ))}
         </div>
+
+        <button 
+          style={styles.button}
+          onClick={() => navigate('/candidate-list')}
+        >
+          Candidates
+        </button>
       </div>
     </div>
   );
