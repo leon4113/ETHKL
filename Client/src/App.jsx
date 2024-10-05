@@ -50,7 +50,7 @@ function App() {
           {isConnected && <Account />}
           <Routes>
             <Route path="/" element={<LandingPage isConnected={isConnected} walletAddress={walletAddress} />} />
-            <Route path="/candidate-home" element={<Homepage isConnected={isConnected} walletAddress={walletAddress} />} />
+            <Route path="/homepage" element={<Homepage isConnected={isConnected} walletAddress={walletAddress} />} />
             <Route path="/create-candidate" element={<CreateCandButton isConnected={isConnected} walletAddress={walletAddress} />} />
             <Route path="/register-candidate" element={<RegisterCandidate addCandidate={addCandidate} isConnected={isConnected} walletAddress={walletAddress} />} />
             <Route path="/candidate-list" element={<CandidateList candidates={candidates} isConnected={isConnected} walletAddress={walletAddress} />} />
