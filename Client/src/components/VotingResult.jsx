@@ -24,7 +24,6 @@ const VotingResult = () => {
           </div>
         ))}
       </div>
-      <button style={styles.button}>Button</button>
     </div>
   );
 };
