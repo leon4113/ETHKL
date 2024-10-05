@@ -18,7 +18,6 @@ export function handleCandidateAdded(event: CandidateAddedEvent): void {
   entity.candidateId = event.params.candidateId
   entity.candidateAddress = event.params.candidateAddress
   entity.name = event.params.name
-  // visionMission is not in the contract event, so it should be removed
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -45,8 +44,7 @@ export function handleVoteCasted(event: VoteCastedEvent): void {
   )
   entity.voter = event.params.voter
   entity.firstChoice = event.params.firstChoice
-  entity.commitment = event.params.voteHash
-  // rankedVotes is not in the contract event, so it should be removed
+  entity.voteHash = event.params.voteHash
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
