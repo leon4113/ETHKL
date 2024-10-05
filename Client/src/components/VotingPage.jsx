@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogAction } from "@/components/ui/alert-dialog"
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { IDKitWidget, VerificationLevel } from '@worldcoin/idkit';
 
 const candidates = [
   { id: 1, name: 'Ariel', description: 'Vision & Mission' },
   { id: 2, name: 'Nathan', description: 'Vision & Mission' },
   { id: 3, name: 'Leon', description: 'Vision & Mission' },
-  { id: 4, name: 'Owen', description: 'Vision ^ Mission'}
+  { id: 4, name: 'Owen', description: 'Vision ^ Mission' }
 ];
 
 const VotingPage = ({ walletAddress, disconnectWallet }) => {
   const navigate = useNavigate();
   const [rankings, setRankings] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isVerified, setIsVerified] = useState(false); // Add isVerified state
 
   useEffect(() => {
     if (walletAddress) {
@@ -21,7 +22,6 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
       navigate('/vote'); // Navigate once the wallet is connected
     }
   }, [walletAddress, navigate]); // Dependency on walletAddress
-
 
   const handleCandidateClick = (id) => {
     setRankings(prevRankings => {
@@ -43,13 +43,31 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
   };
 
   const verifyProof = async (proof) => {
-    // TODO: Calls your implemented server route to verify proof
-    console.log("Proof received:", proof);
-    // You can implement the logic to send this proof to your server here
+    try {
+      const response = await fetch('http://localhost:3001/api/verifyProof', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ proof }),
+      });
+  
+      const result = await response.json();
+      
+      if (result.success) {
+        console.log("Verification successful");
+        // Proceed with enabling vote submission
+      } else {
+        console.log("Verification failed:", result);
+      }
+    } catch (error) {
+      console.error("Error during verification:", error);
+    }
   };
 
   const onSuccess = () => {
     console.log("Worldcoin Verification Success!");
+    setIsVerified(true);  // Update isVerified to true upon success
     handleConfirm();  // Proceed with vote confirmation after successful Worldcoin verification
   };
 
@@ -126,26 +144,29 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
 
           {/* Worldcoin IDKit Widget */}
           <IDKitWidget
-                  app_id="app_0b73807a5c00a0829bc90c85ad7f8c72"
-                  action="anonymous-vote"
-                  false
-                  verification_level={VerificationLevel.Device}
-                  handleVerify={verifyProof}
-                  onSuccess={onSuccess}>
-                  {({ open }) => (
-                    <button
-                      onClick={open}
-                      className="w-full bg-black text-white py-3 text-xl mb-5"
-                    >
-                      Verify with World ID
-                    </button>
-                  )}
-                </IDKitWidget>
+            app_id="app_0b73807a5c00a0829bc90c85ad7f8c72"
+            action="anonymous-vote"
+            verification_level={VerificationLevel.Device}
+            handleVerify={verifyProof}
+            onSuccess={onSuccess}
+          >
+            {({ open }) => (
+              <button
+                onClick={open}
+                className="w-full bg-black text-white py-3 text-xl mb-5"
+              >
+                Verify with World ID
+              </button>
+            )}
+          </IDKitWidget>
 
           {/* Submit Button */}
           <button
-            className="bg-green-500 text-white px-4 py-2 rounded-lg text-lg sm:text-xl"
+            className={`bg-green-500 text-white px-4 py-2 rounded-lg text-lg sm:text-xl ${
+              !isVerified ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
             onClick={handleSubmit}
+            disabled={!isVerified}  // Disable if not verified
           >
             Submit Vote
           </button>
@@ -170,7 +191,7 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
                 <p className="text-base sm:text-lg">Check your votes and confirm your placement by clicking the button below</p>
               </AlertDialogDescription>
               <AlertDialogFooter className="p-6 bg-gray-100">
-              <AlertDialogAction onClick={handleConfirm} className="w-full bg-green-500 text-white py-3 text-xl">
+                <AlertDialogAction onClick={handleConfirm} className="w-full bg-green-500 text-white py-3 text-xl">
                   Confirm
                 </AlertDialogAction>
               </AlertDialogFooter>
