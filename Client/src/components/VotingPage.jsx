@@ -2,19 +2,43 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { IDKitWidget, VerificationLevel } from '@worldcoin/idkit';
+import { ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client';
 
-const candidates = [
-  { id: 1, name: 'Ariel', description: 'Vision & Mission' },
-  { id: 2, name: 'Nathan', description: 'Vision & Mission' },
-  { id: 3, name: 'Leon', description: 'Vision & Mission' },
-  { id: 4, name: 'Owen', description: 'Vision ^ Mission' }
-];
+// Define the API URL
+const APIURL = 'https://api.studio.thegraph.com/query/90815/eth-kl/version/latest';
+
+// Create the Apollo Client
+const client = new ApolloClient({
+  uri: APIURL,
+  cache: new InMemoryCache(),
+});
+
+// Define your GraphQL query
+const CANDIDATES_QUERY = gql`
+  query {
+    candidateAddeds(first: 5) {
+      id
+      candidateId
+      candidateAddress
+      name
+    }
+    electionFinalizeds(first: 5) {
+      id
+      blockNumber
+      blockTimestamp
+      transactionHash
+    }
+  }
+`;
 
 const VotingPage = ({ walletAddress, disconnectWallet }) => {
   const navigate = useNavigate();
   const [rankings, setRankings] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isVerified, setIsVerified] = useState(false); // Add isVerified state
+  const [isVerified, setIsVerified] = useState(false);
+  
+  // Use the useQuery hook to fetch data
+  const { loading, error, data } = useQuery(CANDIDATES_QUERY, { client });
 
   React.useEffect(() => {
     if (walletAddress) {
@@ -123,23 +147,29 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
         {/* Main content */}
         <main className="flex-grow p-4 sm:p-6 md:p-8 flex flex-col justify-between">
           <h1 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold mb-6">VOTE CANDIDATES</h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            {candidates.map((candidate) => (
-              <div key={candidate.id} className="bg-white p-4 rounded-lg text-center">
-                <div className="w-full aspect-square bg-gray-200 mb-2"></div>
-                <h2 className="font-bold text-lg">{candidate.name}</h2>
-                <p className="text-sm text-gray-600 mb-2">{candidate.description}</p>
-                <button
-                  className={`w-12 h-12 rounded-lg text-2xl ${
-                    rankings[candidate.id] ? 'bg-purple-500 text-white' : 'bg-gray-200'
-                  }`}
-                  onClick={() => handleCandidateClick(candidate.id)}
-                >
-                  {rankings[candidate.id] || ''}
-                </button>
-              </div>
-            ))}
-          </div>
+          
+          {loading && <div className="text-white">Loading candidates...</div>}
+          {error && <div className="text-red-500">Error occurred while fetching candidates: {error.message}</div>}
+          
+          {data && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              {data.candidateAddeds.map((candidate) => (
+                <div key={candidate.id} className="bg-white p-4 rounded-lg text-center">
+                  <div className="w-full aspect-square bg-gray-200 mb-2"></div>
+                  <h2 className="font-bold text-lg">{candidate.name}</h2>
+                  <p className="text-sm text-gray-600 mb-2">Candidate ID: {candidate.candidateId}</p>
+                  <button
+                    className={`w-12 h-12 rounded-lg text-2xl ${
+                      rankings[candidate.candidateId] ? 'bg-purple-500 text-white' : 'bg-gray-200'
+                    }`}
+                    onClick={() => handleCandidateClick(candidate.candidateId)}
+                  >
+                    {rankings[candidate.candidateId] || ''}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Worldcoin IDKit Widget */}
           <IDKitWidget
@@ -183,7 +213,7 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
                   {Object.entries(rankings)
                     .sort(([, a], [, b]) => a - b)
                     .map(([id, rank]) => {
-                      const candidate = candidates.find(c => c.id === parseInt(id));
+                      const candidate = data.candidateAddeds.find(c => c.candidateId === parseInt(id));
                       return <p key={id} className="mb-2">{rank}. {candidate.name}</p>;
                     })}
                 </div>
