@@ -1,136 +1,119 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 describe("RankedChoiceVotingWithHash", function () {
-  async function deployRankedChoiceVotingWithHashFixture() {
-    const [owner, addr1, addr2] = await ethers.getSigners();
-    const RankedChoiceVotingWithHash = await ethers.getContractFactory("RankedChoiceVotingWithHash");
-    const rankedChoiceVotingWithHash = await RankedChoiceVotingWithHash.deploy();
+  let RankedChoiceVotingWithHash;
+  let rankedChoiceVoting;
+  let owner;
+  let addr1;
+  let addr2;
+  let addrs;
 
-    return { rankedChoiceVotingWithHash, owner, addr1, addr2 };
-  }
+  beforeEach(async function () {
+    // Get the ContractFactory and Signers here.
+    RankedChoiceVotingWithHash = await ethers.getContractFactory("RankedChoiceVotingWithHash");
+    [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
+
+    // Deploy a new RankedChoiceVotingWithHash contract before each test
+    rankedChoiceVoting = await RankedChoiceVotingWithHash.deploy();
+  });
 
   describe("Deployment", function () {
     it("Should set the right admin", async function () {
-      const { rankedChoiceVotingWithHash, owner } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      expect(await rankedChoiceVotingWithHash.admin()).to.equal(owner.address);
+      expect(await rankedChoiceVoting.admin()).to.equal(owner.address);
+    });
+
+    it("Should start with zero candidates", async function () {
+      expect(await rankedChoiceVoting.totalCandidates()).to.equal(0);
     });
   });
 
   describe("Adding Candidates", function () {
     it("Should allow admin to add a candidate", async function () {
-      const { rankedChoiceVotingWithHash, addr1 } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      await expect(rankedChoiceVotingWithHash.addCandidate("Candidate 1", addr1.address))
-        .to.emit(rankedChoiceVotingWithHash, "CandidateAdded")
-        .withArgs(0, addr1.address, "Candidate 1");
-    });
+      await expect(rankedChoiceVoting.addCandidate("Candidate 1", addr1.address, "Vision 1", "Mission 1"))
+        .to.emit(rankedChoiceVoting, "CandidateAdded")
+        .withArgs(0, addr1.address, "Candidate 1", "Vision 1", "Mission 1");
 
-    it("Should increment totalCandidates when adding candidates", async function () {
-      const { rankedChoiceVotingWithHash, addr1, addr2 } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      await rankedChoiceVotingWithHash.addCandidate("Candidate 1", addr1.address);
-      await rankedChoiceVotingWithHash.addCandidate("Candidate 2", addr2.address);
-      expect(await rankedChoiceVotingWithHash.totalCandidates()).to.equal(2);
+      expect(await rankedChoiceVoting.totalCandidates()).to.equal(1);
     });
 
     it("Should not allow non-admin to add a candidate", async function () {
-      const { rankedChoiceVotingWithHash, addr1 } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      await expect(rankedChoiceVotingWithHash.connect(addr1).addCandidate("Candidate 1", addr1.address))
-        .to.be.revertedWith("Only admin can perform this action");
+      await expect(
+        rankedChoiceVoting.connect(addr1).addCandidate("Candidate 1", addr1.address, "Vision 1", "Mission 1")
+      ).to.be.revertedWith("Only admin can perform this action");
     });
   });
 
   describe("Voting", function () {
-    it("Should allow users to submit votes", async function () {
-      const { rankedChoiceVotingWithHash, addr1 } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      await rankedChoiceVotingWithHash.addCandidate("Candidate 1", addr1.address);
-      const voteHash = ethers.keccak256(ethers.toUtf8Bytes("1,2,3"));
-      
-      await expect(rankedChoiceVotingWithHash.connect(addr1).submitVote(0, voteHash))
-        .to.emit(rankedChoiceVotingWithHash, "VoteCasted")
-        .withArgs(addr1.address, 0, voteHash);
+    beforeEach(async function () {
+      // Add two candidates before each voting test
+      await rankedChoiceVoting.addCandidate("Candidate 1", addr1.address, "Vision 1", "Mission 1");
+      await rankedChoiceVoting.addCandidate("Candidate 2", addr2.address, "Vision 2", "Mission 2");
     });
 
-    it("Should not allow voting twice", async function () {
-      const { rankedChoiceVotingWithHash, addr1 } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      await rankedChoiceVotingWithHash.addCandidate("Candidate 1", addr1.address);
-      const voteHash = ethers.keccak256(ethers.toUtf8Bytes("1,2,3"));
-      
-      await rankedChoiceVotingWithHash.connect(addr1).submitVote(0, voteHash);
-      await expect(rankedChoiceVotingWithHash.connect(addr1).submitVote(0, voteHash))
-        .to.be.revertedWith("You have already voted");
+    it("Should allow a voter to submit a vote", async function () {
+      const commitment = ethers.keccak256(ethers.toUtf8Bytes(owner.address));
+      await expect(rankedChoiceVoting.submitVote([0, 1], commitment))
+        .to.emit(rankedChoiceVoting, "VoteCasted")
+        .withArgs(commitment, [0, 1]);
+
+      expect(await rankedChoiceVoting.getCandidateVoteCount(0)).to.equal(1);
     });
 
-    it("Should not allow voting for non-existent candidate", async function () {
-      const { rankedChoiceVotingWithHash, addr1 } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      const voteHash = ethers.keccak256(ethers.toUtf8Bytes("1,2,3"));
-      
-      await expect(rankedChoiceVotingWithHash.connect(addr1).submitVote(0, voteHash))
-        .to.be.revertedWith("Invalid candidate ID");
-    });
-  });
+    it("Should not allow a voter to vote twice", async function () {
+      const commitment = ethers.keccak256(ethers.toUtf8Bytes(owner.address));
+      await rankedChoiceVoting.submitVote([0, 1], commitment);
 
-  describe("Election Finalization", function () {
-    it("Should allow admin to finalize the election", async function () {
-      const { rankedChoiceVotingWithHash } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      await expect(rankedChoiceVotingWithHash.finalizeElection())
-        .to.emit(rankedChoiceVotingWithHash, "ElectionFinalized");
-    });
-
-    it("Should not allow non-admin to finalize the election", async function () {
-      const { rankedChoiceVotingWithHash, addr1 } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      await expect(rankedChoiceVotingWithHash.connect(addr1).finalizeElection())
-        .to.be.revertedWith("Only admin can perform this action");
+      await expect(rankedChoiceVoting.submitVote([1, 0], commitment)).to.be.revertedWith("You have already voted");
     });
 
     it("Should not allow voting after election is finalized", async function () {
-      const { rankedChoiceVotingWithHash, addr1 } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      await rankedChoiceVotingWithHash.addCandidate("Candidate 1", addr1.address);
-      await rankedChoiceVotingWithHash.finalizeElection();
-      
-      const voteHash = ethers.keccak256(ethers.toUtf8Bytes("1,2,3"));
-      await expect(rankedChoiceVotingWithHash.connect(addr1).submitVote(0, voteHash))
-        .to.be.revertedWith("Election has been finalized");
+      await rankedChoiceVoting.finalizeElection();
+
+      const commitment = ethers.keccak256(ethers.toUtf8Bytes(owner.address));
+      await expect(rankedChoiceVoting.submitVote([0, 1], commitment)).to.be.revertedWith("Election has been finalized");
     });
   });
 
-  describe("Winner Announcement", function () {
+  describe("Finalizing Election", function () {
+    it("Should allow admin to finalize the election", async function () {
+      await expect(rankedChoiceVoting.finalizeElection())
+        .to.emit(rankedChoiceVoting, "ElectionFinalized");
+
+      expect(await rankedChoiceVoting.electionFinalized()).to.be.true;
+    });
+
+    it("Should not allow non-admin to finalize the election", async function () {
+      await expect(rankedChoiceVoting.connect(addr1).finalizeElection())
+        .to.be.revertedWith("Only admin can perform this action");
+    });
+  });
+
+  describe("Announcing Winner", function () {
+    beforeEach(async function () {
+      // Add two candidates and finalize the election before each winner announcement test
+      await rankedChoiceVoting.addCandidate("Candidate 1", addr1.address, "Vision 1", "Mission 1");
+      await rankedChoiceVoting.addCandidate("Candidate 2", addr2.address, "Vision 2", "Mission 2");
+      await rankedChoiceVoting.finalizeElection();
+    });
+
     it("Should allow admin to announce the winner", async function () {
-      const { rankedChoiceVotingWithHash, addr1 } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      await rankedChoiceVotingWithHash.addCandidate("Candidate 1", addr1.address);
-      await rankedChoiceVotingWithHash.finalizeElection();
-      
-      await expect(rankedChoiceVotingWithHash.announceWinner(0))
-        .to.emit(rankedChoiceVotingWithHash, "WinnerAnnounced")
+      await expect(rankedChoiceVoting.announceWinner(0))
+        .to.emit(rankedChoiceVoting, "WinnerAnnounced")
         .withArgs(0);
     });
 
-    it("Should not allow announcing winner before election is finalized", async function () {
-      const { rankedChoiceVotingWithHash, addr1 } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      await rankedChoiceVotingWithHash.addCandidate("Candidate 1", addr1.address);
-      
-      await expect(rankedChoiceVotingWithHash.announceWinner(0))
+    it("Should not allow non-admin to announce the winner", async function () {
+      await expect(rankedChoiceVoting.connect(addr1).announceWinner(0))
+        .to.be.revertedWith("Only admin can perform this action");
+    });
+
+    it("Should not allow announcing winner before finalizing election", async function () {
+      const newVoting = await RankedChoiceVotingWithHash.deploy();
+      await newVoting.addCandidate("Candidate 1", addr1.address, "Vision 1", "Mission 1");
+
+      await expect(newVoting.announceWinner(0))
         .to.be.revertedWith("Election not finalized yet");
-    });
-  });
-
-  describe("Getter Functions", function () {
-    it("Should return correct vote count for a candidate", async function () {
-      const { rankedChoiceVotingWithHash, addr1, addr2 } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      await rankedChoiceVotingWithHash.addCandidate("Candidate 1", addr1.address);
-      const voteHash = ethers.keccak256(ethers.toUtf8Bytes("1,2,3"));
-      
-      await rankedChoiceVotingWithHash.connect(addr2).submitVote(0, voteHash);
-      expect(await rankedChoiceVotingWithHash.getCandidateVoteCount(0)).to.equal(1);
-    });
-
-    it("Should return correct vote hash for a voter", async function () {
-      const { rankedChoiceVotingWithHash, addr1 } = await loadFixture(deployRankedChoiceVotingWithHashFixture);
-      await rankedChoiceVotingWithHash.addCandidate("Candidate 1", addr1.address);
-      const voteHash = ethers.keccak256(ethers.toUtf8Bytes("1,2,3"));
-      
-      await rankedChoiceVotingWithHash.connect(addr1).submitVote(0, voteHash);
-      expect(await rankedChoiceVotingWithHash.getVoterVoteHash(addr1.address)).to.equal(voteHash);
     });
   });
 });

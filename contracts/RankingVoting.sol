@@ -6,20 +6,15 @@ contract RankedChoiceVotingWithHash {
         uint256 voteCount; // First-choice votes
     }
 
-    struct Voter {
-        bool hasVoted;
-        bytes32 voteHash; // Hash of the ranked votes (stored on-chain)
-    }
-
     address public admin;
     uint256 public totalCandidates;
     bool public electionFinalized;
 
-    mapping(uint256 => Candidate) public candidates; // Candidate ID -> Candidate details
-    mapping(address => Voter) public voters; // Track who has voted
+    mapping(uint256 => Candidate) public candidates;  // Candidate ID -> Candidate details
+    mapping(bytes32 => bool) public commitments;      // Track used commitments (hashed voter addresses)
 
-    event CandidateAdded(uint256 candidateId, address candidateAddress, string name);
-    event VoteCasted(address voter, uint256 firstChoice, bytes32 voteHash); // Emit the hash with the vote
+    event CandidateAdded(uint256 candidateId, address candidateAddress, string name, string vision, string mission);
+    event VoteCasted(bytes32 commitment, uint256[] rankedVotes);  // Emit full ranked votes in the event
     event ElectionFinalized();
     event WinnerAnnounced(uint256 candidateId);
 
@@ -37,28 +32,34 @@ contract RankedChoiceVotingWithHash {
         admin = msg.sender;
     }
 
-    // Admin adds confirmed candidates and logs info via events (no candidate storage)
-    function addCandidate(string memory _name, address _candidateAddress) public onlyAdmin {
+    // Admin adds confirmed candidates and logs their vision & mission via events (no on-chain storage)
+    function addCandidate(
+        string memory _name,
+        address _candidateAddress,
+        string memory _vision,
+        string memory _mission
+    ) public onlyAdmin {
         require(bytes(_name).length > 0, "Name cannot be empty");
         require(_candidateAddress != address(0), "Invalid address");
 
-        emit CandidateAdded(totalCandidates, _candidateAddress, _name); // Log candidate info in an event
+        // Emit candidate details along with vision and mission in an event
+        emit CandidateAdded(totalCandidates, _candidateAddress, _name, _vision, _mission);
+
         totalCandidates++;
     }
 
-    // Voter submits their first-choice vote and a hash of their ranked votes
-    function submitVote(uint256 firstChoice, bytes32 rankedVoteHash) public notFinalized {
-        require(!voters[msg.sender].hasVoted, "You have already voted");
-        require(firstChoice < totalCandidates, "Invalid candidate ID");
+    // Voter submits their full ranked votes with off-chain hashed commitment (address hash)
+    function submitVote(uint256[] calldata rankedVotes, bytes32 commitment) public notFinalized {
+        require(!commitments[commitment], "You have already voted");  // Ensure voter hasn't voted
+        require(rankedVotes.length == totalCandidates, "Invalid number of candidates ranked");
 
-        voters[msg.sender] = Voter({
-            hasVoted: true,
-            voteHash: rankedVoteHash // Store the hash of the ranked votes on-chain
-        });
+        // Emit ranked votes without storing them on-chain
+        emit VoteCasted(commitment, rankedVotes);
 
-        candidates[firstChoice].voteCount++; // Only update the first-choice vote count
+        // Only update the first-choice vote count on-chain to reduce gas cost
+        candidates[rankedVotes[0]].voteCount++;
 
-        emit VoteCasted(msg.sender, firstChoice, rankedVoteHash); // Log vote submission and hash
+        commitments[commitment] = true;  // Track commitment to prevent duplicate voting
     }
 
     // Admin finalizes the election and locks further voting
@@ -67,7 +68,7 @@ contract RankedChoiceVotingWithHash {
         emit ElectionFinalized();
     }
 
-    // Optional: Announce the winner
+    // Optional: Announce the winner (after tallying)
     function announceWinner(uint256 winnerId) public onlyAdmin {
         require(electionFinalized, "Election not finalized yet");
         require(winnerId < totalCandidates, "Invalid candidate ID");
@@ -79,11 +80,5 @@ contract RankedChoiceVotingWithHash {
     function getCandidateVoteCount(uint256 candidateId) public view returns (uint256) {
         require(candidateId < totalCandidates, "Invalid candidate ID");
         return candidates[candidateId].voteCount;
-    }
-
-    // Get the hash of a voter's ranked votes (for verification purposes)
-    function getVoterVoteHash(address voterAddress) public view returns (bytes32) {
-        require(voters[voterAddress].hasVoted, "Voter has not voted");
-        return voters[voterAddress].voteHash;
     }
 }
