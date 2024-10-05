@@ -1,38 +1,17 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-function CandidateDetail({ addCandidate }) {
-  const [name, setName] = useState('');
-  const [walletAddress, setWalletAddress] = useState('');
-  const [vision, setVision] = useState('');
-  const [image, setImage] = useState(null);
+function CandidateDetail() {
+  const location = useLocation();
   const navigate = useNavigate();
+  const { candidate } = location.state || {};
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!name || !walletAddress || !vision || !image) {
-      alert('Please fill out all fields');
-      return;
-    }
-
-    const newCandidate = {
-      name,
-      walletAddress,
-      vision,
-      image: URL.createObjectURL(image), // Convert image file to a URL
-    };
-
-    // Add candidate to the list
-    addCandidate(newCandidate);
-
-    // Navigate to the CandidateList page
+  const handleReject = () => {
     navigate('/potential-candidate');
   };
 
-  const handleReject = () => {
-    // Navigate back to the homepage or any other appropriate page on rejection
-    navigate('/');
+  const handleAdd = () => {
+    navigate('/candidate-list');
   };
 
   const styles = {
@@ -96,25 +75,31 @@ function CandidateDetail({ addCandidate }) {
       justifyContent: 'space-between',
       marginTop: '20px',
     },
-    submitButton: {
-      backgroundColor: '#333',
-      color: 'white',
-      padding: '10px',
-      borderRadius: '5px',
-      cursor: 'pointer',
-      width: '45%',
-      fontSize: '16px',
-    },
     rejectButton: {
       backgroundColor: 'red',
       color: 'white',
       padding: '10px',
       borderRadius: '5px',
       cursor: 'pointer',
-      width: '45%',
+      border: 'none',
       fontSize: '16px',
+      width: '45%',
+    },
+    addButton: {
+      backgroundColor: 'green', // Explicitly set to green
+      color: 'white',
+      padding: '10px',
+      borderRadius: '5px',
+      cursor: 'pointer',
+      border: 'none',
+      fontSize: '16px',
+      width: '45%',
     },
   };
+
+  if (!candidate) {
+    return <div>No candidate data available</div>;
+  }
 
   return (
     <div style={styles.container}>
@@ -123,60 +108,48 @@ function CandidateDetail({ addCandidate }) {
         <div style={styles.walletInfo}>0x1231231231231231231231231231312</div>
       </header>
 
+      <h1>Candidate Details</h1>
+
       <div style={styles.formContainer}>
-        <h1>Candidate Details</h1>
+        <img src={candidate.imagePath} alt={candidate.name} style={styles.image} />
+        
+        <div style={styles.formGroup}>
+          <label style={styles.formLabel}>Name</label>
+          <input 
+            type="text" 
+            value={candidate.name} 
+            readOnly 
+            style={styles.formInput}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit}>
-          <div style={styles.formGroup}>
-            <label style={styles.formLabel}>Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              style={styles.formInput}
-              placeholder="Enter candidate name"
-            />
-          </div>
+        <div style={styles.formGroup}>
+          <label style={styles.formLabel}>Wallet Address</label>
+          <input 
+            type="text" 
+            value={candidate.walletAddress} 
+            readOnly 
+            style={styles.formInput}
+          />
+        </div>
 
-          <div style={styles.formGroup}>
-            <label style={styles.formLabel}>Wallet Address</label>
-            <input
-              type="text"
-              value={walletAddress}
-              onChange={(e) => setWalletAddress(e.target.value)}
-              style={styles.formInput}
-              placeholder="Enter wallet address"
-            />
-          </div>
+        <div style={styles.formGroup}>
+          <label style={styles.formLabel}>Vision & Mission</label>
+          <textarea 
+            value={candidate.vision} 
+            readOnly 
+            style={{...styles.formInput, height: '100px', resize: 'none'}}
+          />
+        </div>
 
-          <div style={styles.formGroup}>
-            <label style={styles.formLabel}>Upload Image</label>
-            <input
-              type="file"
-              onChange={(e) => setImage(e.target.files[0])}
-              style={styles.formInput}
-            />
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.formLabel}>Vision & Mission</label>
-            <textarea
-              value={vision}
-              onChange={(e) => setVision(e.target.value)}
-              style={styles.formInput}
-              placeholder="Enter candidate's vision and mission"
-            ></textarea>
-          </div>
-
-          <div style={styles.buttonGroup}>
-            <button type="button" onClick={handleReject} style={styles.rejectButton}>
-              Reject
-            </button>
-            <button type="submit" style={styles.submitButton}>
-              Add
-            </button>
-          </div>
-        </form>
+        <div style={styles.buttonGroup}>
+          <button onClick={handleReject} style={styles.rejectButton}>
+            Reject
+          </button>
+          <button onClick={handleAdd} style={styles.addButton}>
+            Add
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -22,6 +22,10 @@ function PotentialCandidate() {
     fetchCandidates();
   }, []);
 
+  const handleCandidateClick = (candidate) => {
+    navigate('/candidate-detail', { state: { candidate } });
+  };
+
   const styles = {
     container: {
         backgroundColor: '#f5f5f5',
@@ -111,8 +115,12 @@ function PotentialCandidate() {
 
       <div style={styles.candidatesContainer}>
         {candidates.map((candidate, index) => (
-          <div key={index} style={styles.candidateCard}>
-            <img src={candidate.image} alt="Candidate" width="100" />
+          <div 
+            key={index} 
+            style={{...styles.candidateCard, cursor: 'pointer'}} 
+            onClick={() => handleCandidateClick(candidate)}
+          >
+            <img src={candidate.imagePath} alt="Candidate" width="100" />
             <div>
               <strong>{candidate.name}</strong>
               <p>Wallet Address: {candidate.walletAddress}</p>
