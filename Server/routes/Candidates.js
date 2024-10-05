@@ -48,4 +48,21 @@ router.get('/potential-candidates', async (req, res) => {
   }
 });
 
+// API endpoint to delete a candidate
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedCandidate = await Candidate.findByIdAndDelete(id);
+    
+    if (!deletedCandidate) {
+      return res.status(404).json({ error: 'Candidate not found' });
+    }
+    
+    res.status(200).json({ message: 'Candidate deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting candidate:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 module.exports = router;

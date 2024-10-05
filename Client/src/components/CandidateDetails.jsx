@@ -1,13 +1,20 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
 
 function CandidateDetail() {
   const location = useLocation();
   const navigate = useNavigate();
   const { candidate } = location.state || {};
 
-  const handleReject = () => {
-    navigate('/potential-candidate');
+  const handleReject = async () => {
+    try {
+      await axios.delete(`http://localhost:3001/candidates/${candidate._id}`);
+      navigate('/potential-candidate');
+    } catch (error) {
+      console.error('Error deleting candidate:', error);
+    }
   };
 
   const handleAdd = () => {
