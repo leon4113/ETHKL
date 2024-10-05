@@ -37,21 +37,19 @@ function CandidateDetail() {
       });
   
       // Check if the transaction was successful
-      if (response && response.success) {
-        // Delete from Candidates collection
-        await axios.delete(`http://localhost:3001/candidates/${candidate._id}`);
-        
-        // Add to FixedCandidates collection
-        const newCandidate = { name, walletAddress, vision: candidate.vision };
-        await axios.post('http://localhost:3001/fixed-candidates/add-fixed-candidate', newCandidate);
-  
-        // Navigate to the candidate list only after successful transaction and operations
-        navigate('/candidate-list');
-      } else {
-        // Handle the case where the transaction was not successful
-        console.error('Transaction failed:', response.error);
-        alert('Transaction failed. Please try again.');
-      }
+      // Delete from Candidates collection
+      await axios.delete(`http://localhost:3001/candidates/${candidate._id}`);
+      
+      // Add to FixedCandidates collection
+      const newCandidate = { name, walletAddress, vision: candidate.vision };
+      await axios.post('http://localhost:3001/fixed-candidates/add-fixed-candidate', newCandidate);
+
+      // Navigate to the candidate list only after successful transaction and operations
+      navigate('/candidate-list');
+      // Handle the case where the transaction was not successful
+      console.error('Transaction failed:', response.error);
+      alert('Transaction failed. Please try again.');
+      
     } catch (error) {
       console.error('Error adding candidate to fixed list:', error);
       alert('An error occurred. Please check the console for more details.');

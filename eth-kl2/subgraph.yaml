@@ -26,10 +26,10 @@ dataSources:
       eventHandlers:
         - event: CandidateAdded(uint256,address,string)
           handler: handleCandidateAdded
-        - event: VoteCasted(address,uint256,bytes32)
-          handler: handleVoteCasted
         - event: ElectionFinalized()
           handler: handleElectionFinalized
+        - event: VoteCasted(address,uint256,bytes32)
+          handler: handleVoteCasted
         - event: WinnerAnnounced(uint256)
           handler: handleWinnerAnnounced
       file: ./src/ranked-choice-voting-with-hash.ts
