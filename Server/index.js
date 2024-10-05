@@ -20,9 +20,9 @@ mongoose.connect('mongodb+srv://mikaelowen2003:JrLN8aOZJ4DywrC1@cluster0.1rlhe.m
 const candidateRoutes = require('./routes/Candidates');
 const verifyProofRoute = require('./routes/verifyProof');
 
-// Set up routes
+// Set up API Endpoint routes
 app.use('/candidates', candidateRoutes);
-app.use('/routes/verifyProof', verifyProofRoute);
+app.use('/voting', verifyProofRoute); //change the frontend call
 
 // Start the server
 app.listen(3001, () => {

@@ -2,8 +2,15 @@
 import React from 'react';
 import { useEffect, useState } from "react";
 import voteImage from '../assets/vote.jpg';  // Correct path to the image
+import { useNavigate } from 'react-router-dom';
 
 function Homepage() {
+
+  const navigate = useNavigate();
+
+  const handleButtonClick = (path) => {
+    navigate(path); 
+  };
   const styles = {
     appContainer: {
       textAlign: 'center',
@@ -190,16 +197,7 @@ function Homepage() {
             One-person-one-vote doesn’t show how much someone cares about an issue. To vote, you need to connect your wallet.
           </p>
           <div style={styles.buttonGroup} onClick={connectWallet}>
-            <button style={styles.connectButton}>
-            {walletAddress && walletAddress.length > 0
-                    ? `Connected: ${walletAddress.substring(
-                        0,
-                        6
-                      )}...${walletAddress.substring(38)}`
-                    : "Connect Wallet"}
-            </button>
-            <span style={styles.orText}>OR</span>
-            <button style={styles.worldcoinButton}>Login with Worldcoin</button>
+            <button onClick={() => handleButtonClick('/register-candidate')} style={styles.worldcoinButton}>Register as Candidate</button>
           </div>
         </div>
         <div style={styles.imageSection}>
