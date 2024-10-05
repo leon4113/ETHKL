@@ -16,5 +16,23 @@ export const abi = [
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "rankedVotes",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "commitment",
+                "type": "bytes32"
+            }
+        ],
+        "name": "submitVote",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
     }
 ];

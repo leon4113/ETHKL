@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useAccount, WagmiProvider } from 'wagmi';
+import { config } from '../../config';
+
 import Homepage from './components/Homepage';
 import CreateCandButton from './components/CreateCandButton';
 import RegisterCandidate from './components/RegisterCandidate';
@@ -7,9 +11,6 @@ import CandidateList from './components/CandidateList';
 import PotentialCandidate from './components/PotentialCandidate';
 import CandidateDetail from './components/CandidateDetails';
 import VotingPage from './components/VotingPage';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useAccount, WagmiProvider } from 'wagmi';
-import { config } from '../../config';
 import { Account } from './components/account';
 import { WalletOptions } from './components/wallet-options';
 import LandingPage from './components/LandingPage';
@@ -17,23 +18,25 @@ import RegisterSuccess from './components/register-success';
 
 const queryClient = new QueryClient();
 
-function ConnectWallet({ setIsConnected }) {
-  const { isConnected } = useAccount();
+function ConnectWallet({ setIsConnected, setWalletAddress }) {
+  const { isConnected, address } = useAccount();
 
-  // Call the setIsConnected function when isConnected changes
   React.useEffect(() => {
     setIsConnected(isConnected);
-  }, [isConnected, setIsConnected]);
+    if (isConnected && address) {
+      setWalletAddress(address);
+    }
+  }, [isConnected, address, setIsConnected, setWalletAddress]);
 
-  if (isConnected) return <Account />;
+  if (isConnected) return null;
   return <WalletOptions />;
 }
 
 function App() {
   const [candidates, setCandidates] = useState([]);
-  const [isConnected, setIsConnected] = useState(false); // New state to track connection status
+  const [isConnected, setIsConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState('');
 
-  // Function to add a candidate to the list
   const addCandidate = (candidate) => {
     setCandidates([...candidates, candidate]);
   };
@@ -42,17 +45,18 @@ function App() {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <Router>
-          <ConnectWallet setIsConnected={setIsConnected} /> {/* Pass down the setter function */}
+          <ConnectWallet setIsConnected={setIsConnected} setWalletAddress={setWalletAddress} />
+          {isConnected && <Account />}
           <Routes>
-            <Route path="/" element={<LandingPage isConnected={isConnected} />} /> {/* Pass isConnected as a prop */}
-            <Route path="/candidate-home" element={<Homepage />} />
-            <Route path="/create-candidate" element={<CreateCandButton />} />
-            <Route path="/register-candidate" element={<RegisterCandidate addCandidate={addCandidate} />} />
-            <Route path="/candidate-list" element={<CandidateList candidates={candidates} />} />
-            <Route path="/potential-candidate" element={<PotentialCandidate candidates={candidates} />} />
-            <Route path="/candidate-detail" element={<CandidateDetail candidates={candidates} />} />
-            <Route path ="/register-success" element = {<RegisterSuccess candidates={candidates}/>}/>
-            <Route path="/voting" element={<VotingPage candidates={candidates} />} />
+            <Route path="/" element={<LandingPage isConnected={isConnected} walletAddress={walletAddress} />} />
+            <Route path="/homepage" element={<Homepage isConnected={isConnected} walletAddress={walletAddress} />} />
+            <Route path="/create-candidate" element={<CreateCandButton isConnected={isConnected} walletAddress={walletAddress} />} />
+            <Route path="/register-candidate" element={<RegisterCandidate addCandidate={addCandidate} isConnected={isConnected} walletAddress={walletAddress} />} />
+            <Route path="/candidate-list" element={<CandidateList candidates={candidates} isConnected={isConnected} walletAddress={walletAddress} />} />
+            <Route path="/potential-candidate" element={<PotentialCandidate candidates ={candidates} isConnected={isConnected} walletAddress={walletAddress} />} />
+            <Route path="/candidate-detail" element={<CandidateDetail candidates ={candidates} isConnected={isConnected} walletAddress={walletAddress} />} />
+            <Route path="/voting" element={<VotingPage isConnected={isConnected} walletAddress={walletAddress} />} />
+            <Route path="/register-success" element={<RegisterSuccess isConnected={isConnected} walletAddress={walletAddress} />} />
           </Routes>
         </Router>
       </QueryClientProvider>

@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { IDKitWidget, VerificationLevel } from '@worldcoin/idkit';
 import { ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client';
+import { useWriteContract, useWaitForTransactionReceipt, } from 'wagmi'
+import { abi } from '../../abi';
+import axios from 'axios';
+import { keccak256, toUtf8Bytes } from 'ethers';
+
+
+
 
 // Define the API URL
 const APIURL = 'https://api.studio.thegraph.com/query/90815/eth-kl/version/latest';
@@ -32,20 +39,22 @@ const CANDIDATES_QUERY = gql`
 `;
 
 const VotingPage = ({ walletAddress, disconnectWallet }) => {
+  const { data: hash,isPending, writeContract } = useWriteContract()
   const navigate = useNavigate();
   const [rankings, setRankings] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   
+  
   // Use the useQuery hook to fetch data
   const { loading, error, data } = useQuery(CANDIDATES_QUERY, { client });
 
-  React.useEffect(() => {
-    if (walletAddress) {
-      console.log('Navigating to /vote with address:', walletAddress); // Debug log
-      navigate('/vote'); // Navigate once the wallet is connected
-    }
-  }, [walletAddress, navigate]); // Dependency on walletAddress
+  // React.useEffect(() => {
+  //   if (walletAddress) {
+  //     console.log('Navigating to /vote with address:', walletAddress); // Debug log
+  //     navigate('/vote'); // Navigate once the wallet is connected
+  //   }
+  // }, [walletAddress, navigate]); // Dependency on walletAddress
 
   const handleCandidateClick = (id) => {
     setRankings(prevRankings => {
@@ -60,32 +69,56 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
     });
   };
 
-  const handleSubmit = () => {
-    if (Object.keys(rankings).length > 0) {
-      setShowConfirmation(true);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (Object.keys(rankings).length > 0 && isVerified) {
+      // Convert rankings to the required format
+      const rankedVotes = Object.entries(rankings)
+        .sort(([, rankA], [, rankB]) => rankA - rankB)
+        .map(([candidateId]) => BigInt(candidateId));
+        if (!walletAddress) {
+          console.error('Wallet address is not available');
+          // You might want to show an error message to the user here
+          return;
+        }
+      // Hash the wallet address using keccak256
+      const commitment = keccak256(toUtf8Bytes(walletAddress));
+
+      // Call the smart contract
+      writeContract({
+        address: '0x2eAaB92ef4c25Af22A607825e76f51f2aFfB449C',
+        abi,
+        functionName: 'submitVote',
+        args: [
+          rankedVotes,
+          commitment, // Use the hashed wallet address as the commitment
+        ],
+      });
     }
   };
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({
+      hash,
+    })
 
   const verifyProof = async (proof) => {
     try {
-      const response = await fetch('http://localhost:3001/voting/verifyProof', {
-        method: 'POST',
+      const response = await axios.post('http://localhost:3001/voting', proof, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ proof }),
       });
   
-      const result = await response.json();
-      
-      if (result.success) {
-        console.log("Verification successful");
-        // Proceed with enabling vote submission
+      if (response.status === 200) {
+        console.log('Verification successful:', response.data);
+        return response.data.verified;
       } else {
-        console.log("Verification failed:", result);
+        console.error('Verification failed:', response.data);
+        return false;
       }
     } catch (error) {
-      console.error("Error during verification:", error);
+      console.error('Error verifying proof:', error.message);
+      return false;
     }
   };
 
@@ -95,7 +128,7 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
     handleConfirm();  // Proceed with vote confirmation after successful Worldcoin verification
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = (e) => {
     console.log('Confirmed rankings:', rankings);
     setShowConfirmation(false);
     setRankings({});
@@ -197,7 +230,10 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
             onClick={handleSubmit}
             disabled={!isVerified}  // Disable if not verified
           >
-            Submit Vote
+            {isPending ? 'Confirming...' : 'Submit Vote'}
+            {hash && <div>Transaction Hash: {hash}</div>}
+            {isConfirming && <div>Waiting for confirmation...</div>}
+            {isConfirmed && <div>Transaction confirmed.</div>}
           </button>
         </main>
 
@@ -213,7 +249,7 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
                   {Object.entries(rankings)
                     .sort(([, a], [, b]) => a - b)
                     .map(([id, rank]) => {
-                      const candidate = data.candidateAddeds.find(c => c.candidateId === parseInt(id));
+                      const candidate = data.candidateAddeds.find(c => c.candidateId === id);
                       return <p key={id} className="mb-2">{rank}. {candidate.name}</p>;
                     })}
                 </div>

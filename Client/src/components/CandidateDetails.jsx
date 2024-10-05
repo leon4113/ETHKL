@@ -21,29 +21,40 @@ function CandidateDetail() {
 
   const handleAdd = async (e) => {
     e.preventDefault();
-
+  
     try {
       // Retrieve the form data
       const formData = new FormData(e.target);
       const name = formData.get('name');
       const walletAddress = formData.get('walletAddress');
-      writeContract({
+  
+      // Await the writeContract function to ensure the transaction is complete
+      const response = await writeContract({
         address: '0xCb68Dc49d69b9d4ED73cBA460F03468100e8B9dA',
         abi,
         functionName: 'addCandidate',
         args: [name, walletAddress],
-      })
-
-      // Delete from Candidates collection
-      await axios.delete(`http://localhost:3001/candidates/${candidate._id}`);
-      
-      // Add to FixedCandidates collection
-      const newCandidate = { name, walletAddress, vision: candidate.vision };
-      await axios.post('http://localhost:3001/fixed-candidates/add-fixed-candidate', newCandidate);
-
-      navigate('/candidate-list');
+      });
+  
+      // Check if the transaction was successful
+      if (response && response.success) {
+        // Delete from Candidates collection
+        await axios.delete(`http://localhost:3001/candidates/${candidate._id}`);
+        
+        // Add to FixedCandidates collection
+        const newCandidate = { name, walletAddress, vision: candidate.vision };
+        await axios.post('http://localhost:3001/fixed-candidates/add-fixed-candidate', newCandidate);
+  
+        // Navigate to the candidate list only after successful transaction and operations
+        navigate('/candidate-list');
+      } else {
+        // Handle the case where the transaction was not successful
+        console.error('Transaction failed:', response.error);
+        alert('Transaction failed. Please try again.');
+      }
     } catch (error) {
       console.error('Error adding candidate to fixed list:', error);
+      alert('An error occurred. Please check the console for more details.');
     }
   };
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
