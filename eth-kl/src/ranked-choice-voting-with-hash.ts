@@ -18,6 +18,8 @@ export function handleCandidateAdded(event: CandidateAddedEvent): void {
   entity.candidateId = event.params.candidateId
   entity.candidateAddress = event.params.candidateAddress
   entity.name = event.params.name
+  entity.vision = event.params.vision
+  entity.mission = event.params.mission
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -42,9 +44,8 @@ export function handleVoteCasted(event: VoteCastedEvent): void {
   let entity = new VoteCasted(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
-  entity.voter = event.params.voter
-  entity.firstChoice = event.params.firstChoice
-  entity.voteHash = event.params.voteHash
+  entity.commitment = event.params.commitment
+  entity.rankedVotes = event.params.rankedVotes
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp

@@ -8,9 +8,9 @@ dataSources:
     name: RankedChoiceVotingWithHash
     network: scroll-sepolia
     source:
-      address: "0xCb68Dc49d69b9d4ED73cBA460F03468100e8B9dA"
+      address: "0x2eAaB92ef4c25Af22A607825e76f51f2aFfB449C"
       abi: RankedChoiceVotingWithHash
-      startBlock: 6876741
+      startBlock: 6881604
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -24,11 +24,11 @@ dataSources:
         - name: RankedChoiceVotingWithHash
           file: ./abis/RankedChoiceVotingWithHash.json
       eventHandlers:
-        - event: CandidateAdded(uint256,address,string)
+        - event: CandidateAdded(uint256,address,string,string,string)
           handler: handleCandidateAdded
         - event: ElectionFinalized()
           handler: handleElectionFinalized
-        - event: VoteCasted(address,uint256,bytes32)
+        - event: VoteCasted(bytes32,uint256[])
           handler: handleVoteCasted
         - event: WinnerAnnounced(uint256)
           handler: handleWinnerAnnounced

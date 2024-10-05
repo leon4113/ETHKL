@@ -1,44 +1,4 @@
 [
-  {
-    "inputs": [
-      { "internalType": "string", "name": "_name", "type": "string" },
-      {
-        "internalType": "address",
-        "name": "_candidateAddress",
-        "type": "address"
-      }
-    ],
-    "name": "addCandidate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "winnerId", "type": "uint256" }
-    ],
-    "name": "announceWinner",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "finalizeElection",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "firstChoice", "type": "uint256" },
-      { "internalType": "bytes32", "name": "rankedVoteHash", "type": "bytes32" }
-    ],
-    "name": "submitVote",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
   { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
   {
     "anonymous": false,
@@ -60,6 +20,18 @@
         "internalType": "string",
         "name": "name",
         "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "vision",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "mission",
+        "type": "string"
       }
     ],
     "name": "CandidateAdded",
@@ -76,21 +48,15 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "voter",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "firstChoice",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
         "internalType": "bytes32",
-        "name": "voteHash",
+        "name": "commitment",
         "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256[]",
+        "name": "rankedVotes",
+        "type": "uint256[]"
       }
     ],
     "name": "VoteCasted",
@@ -110,10 +76,35 @@
     "type": "event"
   },
   {
+    "inputs": [
+      { "internalType": "string", "name": "_name", "type": "string" },
+      {
+        "internalType": "address",
+        "name": "_candidateAddress",
+        "type": "address"
+      },
+      { "internalType": "string", "name": "_vision", "type": "string" },
+      { "internalType": "string", "name": "_mission", "type": "string" }
+    ],
+    "name": "addCandidate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "admin",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "winnerId", "type": "uint256" }
+    ],
+    "name": "announceWinner",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -126,10 +117,24 @@
     "type": "function"
   },
   {
+    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "name": "commitments",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "electionFinalized",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "finalizeElection",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -143,27 +148,22 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "voterAddress", "type": "address" }
+      {
+        "internalType": "uint256[]",
+        "name": "rankedVotes",
+        "type": "uint256[]"
+      },
+      { "internalType": "bytes32", "name": "commitment", "type": "bytes32" }
     ],
-    "name": "getVoterVoteHash",
-    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
-    "stateMutability": "view",
+    "name": "submitVote",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "totalCandidates",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "voters",
-    "outputs": [
-      { "internalType": "bool", "name": "hasVoted", "type": "bool" },
-      { "internalType": "bytes32", "name": "voteHash", "type": "bytes32" }
-    ],
     "stateMutability": "view",
     "type": "function"
   }

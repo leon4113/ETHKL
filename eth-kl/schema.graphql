@@ -3,6 +3,8 @@ type CandidateAdded @entity(immutable: true) {
   candidateId: BigInt! # uint256
   candidateAddress: Bytes! # address
   name: String! # string
+  vision: String! # string
+  mission: String! # string
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -18,9 +20,8 @@ type ElectionFinalized @entity(immutable: true) {
 
 type VoteCasted @entity(immutable: true) {
   id: Bytes!
-  voter: Bytes! # address
-  firstChoice: BigInt! # uint256
-  voteHash: Bytes! # bytes32
+  commitment: Bytes! # bytes32
+  rankedVotes: [BigInt!]! # uint256[]
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
