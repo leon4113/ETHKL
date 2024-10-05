@@ -17,8 +17,18 @@ function CandidateDetail() {
     }
   };
 
-  const handleAdd = () => {
-    navigate('/candidate-list');
+  const handleAdd = async () => {
+    try {
+      // Delete from Candidates collection
+      await axios.delete(`http://localhost:3001/candidates/${candidate._id}`);
+      
+      // Add to FixedCandidates collection
+      await axios.post('http://localhost:3001/fixed-candidates/add-fixed-candidate', candidate);
+      
+      navigate('/candidate-list');
+    } catch (error) {
+      console.error('Error adding candidate to fixed list:', error);
+    }
   };
 
   const styles = {
