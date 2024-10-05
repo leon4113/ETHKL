@@ -44,7 +44,7 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
 
   const verifyProof = async (proof) => {
     try {
-      const response = await fetch('http://localhost:3001/api/verifyProof', {
+      const response = await fetch('http://localhost:3001/voting/verifyProof', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

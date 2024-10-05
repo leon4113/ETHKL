@@ -1,0 +1,35 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: RankedChoiceVotingWithHash
+    network: scroll-sepolia
+    source:
+      address: "0xCb68Dc49d69b9d4ED73cBA460F03468100e8B9dA"
+      abi: RankedChoiceVotingWithHash
+      startBlock: 6876741
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CandidateAdded
+        - ElectionFinalized
+        - VoteCasted
+        - WinnerAnnounced
+      abis:
+        - name: RankedChoiceVotingWithHash
+          file: ./abis/RankedChoiceVotingWithHash.json
+      eventHandlers:
+        - event: CandidateAdded(uint256,address,string)
+          handler: handleCandidateAdded
+        - event: ElectionFinalized()
+          handler: handleElectionFinalized
+        - event: VoteCasted(address,uint256,bytes32)
+          handler: handleVoteCasted
+        - event: WinnerAnnounced(uint256)
+          handler: handleWinnerAnnounced
+      file: ./src/ranked-choice-voting-with-hash.ts
