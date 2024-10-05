@@ -12,7 +12,7 @@ import { keccak256, toUtf8Bytes } from 'ethers';
 
 
 // Define the API URL
-const APIURL = 'https://api.studio.thegraph.com/query/90815/eth-kl/v.0.0.2';
+const APIURL = 'https://api.studio.thegraph.com/query/90815/eth-kl2/v0.0.9';
 
 
 // Create the Apollo Client
