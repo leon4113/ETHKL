@@ -14,12 +14,13 @@ function LandingPage({ isConnected }) {
 
   const styles = {
     container: {
-      backgroundColor: '#4c4ce9', // Main background color (blue)
+      backgroundColor: '#f5f5f5',
       height: '100vh',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       alignItems: 'center',
+      padding: '20px',
       fontFamily: 'Arial, sans-serif',
     },
     mainBox: {
@@ -51,6 +52,18 @@ function LandingPage({ isConnected }) {
       cursor: 'pointer',
       border: 'none',
     },
+    header: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '10px 20px',
+      width: '100%',
+      boxShadow: '0px 10px',
+    },
+    logo: {
+      fontSize: '24px',
+      fontWeight: 'bold',
+    },
     adminButton: {
       backgroundColor: '#d3d3d3', // Grey for Admin button
       color: 'black',
@@ -65,6 +78,10 @@ function LandingPage({ isConnected }) {
 
   return (
     <div style={styles.container}>
+      {/* Header */}
+      <header style={styles.header}>
+        <div style={styles.logo}>Prevote</div>
+      </header>
       <div style={styles.mainBox}>
         <h2 style={styles.title}>Revolutionizing Voting with</h2>
         <h1 style={{ ...styles.title, fontSize: '36px', color: 'black' }}>

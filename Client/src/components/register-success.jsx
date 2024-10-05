@@ -8,6 +8,10 @@ function RegisterSuccess({ candidates }) {
     container: {
       backgroundColor: '#f5f5f5',
       height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
       padding: '20px',
       fontFamily: 'Arial, sans-serif',
     },
@@ -15,7 +19,9 @@ function RegisterSuccess({ candidates }) {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: '10px 0px',
+      padding: '10px 20px',
+      width: '100%',
+      boxShadow: '0px 10px',
     },
     logo: {
       fontSize: '24px',
@@ -87,11 +93,16 @@ function RegisterSuccess({ candidates }) {
       textAlign: 'center',
       marginBottom: '30px', // Added margin for spacing
       textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)', // Added text shadow for depth
+      padding:'50px 30px 30px 0px'
     },
   };
 
   return (
     <div style={styles.container}>
+      {/* Header */}
+      <header style={styles.header}>
+        <div style={styles.logo}>Prevote</div>
+      </header>
       <h1 style={styles.successText}>YOU ARE SUCCESSFULLY REGISTERED AS CANDIDATES</h1> {/* Updated style applied here */}
 
       <div style={styles.candidatesContainer}>

@@ -48,6 +48,7 @@ function CandidateDetail() {
       alignItems: 'center',
       padding: '10px 20px',
       width: '100%',
+      boxShadow: '0px 10px',
     },
     logo: {
       fontSize: '24px',
@@ -65,7 +66,7 @@ function CandidateDetail() {
     },
     formContainer: {
       backgroundColor: 'white',
-      padding: '20px',
+      padding: '0px',
       borderRadius: '10px',
       boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
       width: '600px',
@@ -112,6 +113,11 @@ function CandidateDetail() {
       fontSize: '16px',
       width: '45%',
     },
+    h1:{
+      padding:'50px 30px 30px 0px',
+      fontSize: '24px',
+      fontWeight: 'bold'
+    },
   };
 
   if (!candidate) {
@@ -122,10 +128,9 @@ function CandidateDetail() {
     <div style={styles.container}>
       <header style={styles.header}>
         <div style={styles.logo}>Prevote</div>
-        <div style={styles.walletInfo}>0x1231231231231231231231231231312</div>
       </header>
 
-      <h1>Candidate Details</h1>
+      <h1 style={styles.h1}>Candidate Details</h1>
 
       <div style={styles.formContainer}>
         <img src={candidate.imagePath} alt={candidate.name} style={styles.image} />

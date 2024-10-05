@@ -75,7 +75,6 @@ function CreateCandButton() {
       {/* Header */}
       <header style={styles.header}>
         <div style={styles.logo}>Prevote</div>
-        <div style={styles.walletInfo}>0x1231231231231231231231231231312</div>
       </header>
 
       {/* Main Content */}

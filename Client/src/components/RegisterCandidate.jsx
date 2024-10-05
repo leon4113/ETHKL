@@ -35,7 +35,7 @@ function RegisterCandidate({ addCandidate }) {
   };
 
   const styles = {
-    container: { 
+    container: {
       backgroundColor: '#f5f5f5',
       height: '100vh',
       display: 'flex',
@@ -45,13 +45,13 @@ function RegisterCandidate({ addCandidate }) {
       padding: '20px',
       fontFamily: 'Arial, sans-serif',
     },
-    header: { 
+    header: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '10px 20px',
       width: '100%',
-      boxShadow: '10px ',
+      boxShadow: '0px 10px',
     },
     logo: {
         fontSize: '24px',
@@ -105,6 +105,10 @@ function RegisterCandidate({ addCandidate }) {
 
   return (
     <div style={styles.container}>
+      {/* Header */}
+      <header style={styles.header}>
+        <div style={styles.logo}>Prevote</div>
+      </header>
       <div style={styles.formContainer}>
         <h1>CREATE CANDIDATE</h1>
 

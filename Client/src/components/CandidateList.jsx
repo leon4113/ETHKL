@@ -21,18 +21,23 @@ function CandidateList() {
 
   const styles = {
     container: {
-        backgroundColor: '#f5f5f5',
-        height: '100vh',
-        padding: '20px',
-        fontFamily: 'Arial, sans-serif',
-      },
-      header: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '10px 0px',
-        boxShadow: '0px 10px',
-      },
+      backgroundColor: '#f5f5f5',
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      padding: '20px',
+      fontFamily: 'Arial, sans-serif',
+    },
+    header: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '10px 20px',
+      width: '100%',
+      boxShadow: '0px 10px',
+    },
       logo: {
         fontSize: '24px',
         fontWeight: 'bold', // This makes "Prevote" bold
@@ -96,16 +101,20 @@ function CandidateList() {
       marginBottom: '10px',
       color: '#333',
     },
+    h1:{
+      padding:'50px 30px 30px 0px',
+      fontSize: '24px',
+      fontWeight: 'bold'
+    },
   };
 
   return (
     <div style={styles.container}>
       <header style={styles.header}>
         <div style={styles.logo}>Prevote</div>
-        <div style={styles.walletInfo}>0x1231231231231231231231231231312</div>
       </header>
 
-      <h1>CANDIDATES</h1>
+      <h1 style={styles.h1}>CANDIDATES</h1>
 
       <div style={styles.candidatesContainer}>
         {candidates.map((candidate, index) => (

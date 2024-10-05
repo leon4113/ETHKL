@@ -28,6 +28,7 @@ function Homepage() {
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '10px 20px',
+      boxShadow: '0px 10px',
     },
     logo: {
       fontSize: '24px',
