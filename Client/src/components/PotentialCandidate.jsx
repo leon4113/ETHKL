@@ -27,124 +27,100 @@ function PotentialCandidate() {
   };
 
   const styles = {
-    container: {
-      backgroundColor: '#f5f5f5',
-      height: '100vh',
+    pageContainer: {
+      backgroundColor: '#fff',
+      minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'flex-start',
       alignItems: 'center',
+    },
+    container: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      width: '100%',
+      maxWidth: '1200px',
       padding: '20px',
-      fontFamily: 'Arial, sans-serif',
+      boxSizing: 'border-box',
     },
     header: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '10px 20px',
-      width: '100%',
+      width: '110%',
       boxShadow: '0px 10px',
     },
-      logo: {
-        fontSize: '24px',
-        fontWeight: 'bold', // This makes "Prevote" bold
-      },
-      walletInfo: {
-        backgroundColor: '#d4e2f3',
-        padding: '10px',
-        borderRadius: '5px',
-        fontSize: '14px',
-        color: '#333',
-        textAlign: 'center',
-        width: '300px',
-        border: '1px solid #ccc', // This adds a box around the wallet info
-      },
-    h1:{
-      padding:'80px',
+    logo: {
       fontSize: '24px',
-      fontWeight: 'bold'
+      fontWeight: 'bold',
     },
     candidateCard: {
       backgroundColor: '#fff',
       padding: '20px',
       marginBottom: '10px',
       boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-      borderRadius: 'px',
-      width: '300px',
+      borderRadius: '5px',
+      width: 'calc(33.33% - 14px)',
+      minWidth: '430px',
+      cursor: 'pointer',
     },
     candidatesContainer: {
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'column',
       gap: '20px',
+      width: '100%',
+      maxWidth: '1000px',
     },
-    button: {
-      backgroundColor: candidates.length >= 3 ? 'green' : 'red',
-      color: 'white',
-      padding: '10px',
-      borderRadius: '5px',
-      cursor: candidates.length >= 3 ? 'pointer' : 'not-allowed',
-      border: 'none',
-      marginRight: '10px',
-    },
-    noticeButton: {
-      backgroundColor: '#333',
-      color: 'white',
-      padding: '10px',
-      borderRadius: '5px',
-      cursor: 'pointer',
-      border: 'none',
-      marginTop: '20px',
-    },
-    footerContainer: {
+    candidateRow: {
       display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginTop: '30px',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      gap: '10px',
     },
-    noticeBox: {
-        backgroundColor: '#f8f9fa',
-        padding: '15px',
-        borderRadius: '8px',
-        boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-        maxWidth: '300px',
-        position: 'relative', // Allow it to be placed properly
-      },
-    noticeText: {
-      marginBottom: '10px',
-      color: '#333',
+    h1: {
+      padding: '50px 30px 30px 0px',
+      fontSize: '24px',
+      fontWeight: 'bold'
     },
   };
 
+  // Helper function to chunk the candidates array into groups of 3
+  const chunkArray = (arr, size) => {
+    return Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+      arr.slice(i * size, i * size + size)
+    );
+  };
+
   return (
-    <div style={styles.container}>
-      {/* Header */}
-      <header style={styles.header}>
-        <div style={styles.logo}>Prevote</div>
-      </header>
+    <div style={styles.pageContainer}>
+      <div style={styles.container}>
+        <header style={styles.header}>
+          <div style={styles.logo}>Prevote</div>
+        </header>
 
-      <h1 style={styles.h1}>POTENTIAL CANDIDATES</h1>
+        <h1 style={styles.h1}>POTENTIAL CANDIDATES</h1>
 
-      <div style={styles.candidatesContainer}>
-        {candidates.map((candidate, index) => (
-          <div 
-            key={index} 
-            style={{...styles.candidateCard, cursor: 'pointer'}} 
-            onClick={() => handleCandidateClick(candidate)}
-          >
-            <img src={candidate.imagePath} alt="Candidate" width="100" />
-            <div>
-              <strong>{candidate.name}</strong>
-              <p>Wallet Address: {candidate.walletAddress}</p>
-              <p>Vision & Mission: {candidate.vision}</p>
+        <div style={styles.candidatesContainer}>
+          {chunkArray(candidates, 3).map((row, rowIndex) => (
+            <div key={rowIndex} style={styles.candidateRow}>
+              {row.map((candidate, index) => (
+                <div
+                  key={index}
+                  style={styles.candidateCard}
+                  onClick={() => handleCandidateClick(candidate)}
+                >
+                  <img src={candidate.imagePath} alt="Candidate" width="100" />
+                  <div>
+                    <strong>{candidate.name}</strong>
+                    <p>Wallet Address: {candidate.walletAddress}</p>
+                    <p>Vision & Mission: {candidate.vision}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
-      </div>
-
-      <div style={styles.footerContainer}>
-        
-
-       
+          ))}
+        </div>
       </div>
     </div>
   );

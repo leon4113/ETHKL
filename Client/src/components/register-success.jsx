@@ -43,7 +43,8 @@ function RegisterSuccess({ candidates }) {
       marginBottom: '10px',
       boxShadow: '0 0 10px rgba(0,0,0,0.1)',
       borderRadius: '5px',
-      width: '300px',
+      width: 'calc(33.33% - 14px)', // Subtracting the gap to ensure 3 cards fit
+      minWidth: '430px', // Minimum width to ensure readability
     },
     candidatesContainer: {
       display: 'flex',
