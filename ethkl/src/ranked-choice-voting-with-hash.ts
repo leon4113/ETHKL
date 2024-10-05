@@ -1,25 +1,23 @@
 import {
-  CloseStream as CloseStreamEvent,
-  Deposit as DepositEvent,
-  ExecuteTransaction as ExecuteTransactionEvent,
-  OpenStream as OpenStreamEvent,
-  Owner as OwnerEvent,
-  Withdraw as WithdrawEvent
+  CandidateAdded as CandidateAddedEvent,
+  ElectionFinalized as ElectionFinalizedEvent,
+  VoteCasted as VoteCastedEvent,
+  WinnerAnnounced as WinnerAnnouncedEvent
 } from "../generated/RankedChoiceVotingWithHash/RankedChoiceVotingWithHash"
 import {
-  CloseStream,
-  Deposit,
-  ExecuteTransaction,
-  OpenStream,
-  Owner,
-  Withdraw
+  CandidateAdded,
+  ElectionFinalized,
+  VoteCasted,
+  WinnerAnnounced
 } from "../generated/schema"
 
-export function handleCloseStream(event: CloseStreamEvent): void {
-  let entity = new CloseStream(
+export function handleCandidateAdded(event: CandidateAddedEvent): void {
+  let entity = new CandidateAdded(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
-  entity.to = event.params.to
+  entity.candidateId = event.params.candidateId
+  entity.candidateAddress = event.params.candidateAddress
+  entity.name = event.params.name
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -28,13 +26,10 @@ export function handleCloseStream(event: CloseStreamEvent): void {
   entity.save()
 }
 
-export function handleDeposit(event: DepositEvent): void {
-  let entity = new Deposit(
+export function handleElectionFinalized(event: ElectionFinalizedEvent): void {
+  let entity = new ElectionFinalized(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
-  entity.sender = event.params.sender
-  entity.amount = event.params.amount
-  entity.balance = event.params.balance
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -43,17 +38,13 @@ export function handleDeposit(event: DepositEvent): void {
   entity.save()
 }
 
-export function handleExecuteTransaction(event: ExecuteTransactionEvent): void {
-  let entity = new ExecuteTransaction(
+export function handleVoteCasted(event: VoteCastedEvent): void {
+  let entity = new VoteCasted(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
-  entity.owner = event.params.owner
-  entity.to = event.params.to
-  entity.value = event.params.value
-  entity.data = event.params.data
-  entity.nonce = event.params.nonce
-  entity.hash = event.params.hash
-  entity.result = event.params.result
+  entity.voter = event.params.voter
+  entity.firstChoice = event.params.firstChoice
+  entity.voteHash = event.params.voteHash
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -62,42 +53,11 @@ export function handleExecuteTransaction(event: ExecuteTransactionEvent): void {
   entity.save()
 }
 
-export function handleOpenStream(event: OpenStreamEvent): void {
-  let entity = new OpenStream(
+export function handleWinnerAnnounced(event: WinnerAnnouncedEvent): void {
+  let entity = new WinnerAnnounced(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
-  entity.to = event.params.to
-  entity.amount = event.params.amount
-  entity.frequency = event.params.frequency
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleOwner(event: OwnerEvent): void {
-  let entity = new Owner(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.owner = event.params.owner
-  entity.added = event.params.added
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleWithdraw(event: WithdrawEvent): void {
-  let entity = new Withdraw(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.to = event.params.to
-  entity.amount = event.params.amount
-  entity.reason = event.params.reason
+  entity.candidateId = event.params.candidateId
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp

@@ -1,59 +1,34 @@
-type CloseStream @entity(immutable: true) {
+type CandidateAdded @entity(immutable: true) {
   id: Bytes!
-  to: Bytes! # address
+  candidateId: BigInt! # uint256
+  candidateAddress: Bytes! # address
+  name: String! # string
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type Deposit @entity(immutable: true) {
+type ElectionFinalized @entity(immutable: true) {
   id: Bytes!
-  sender: Bytes! # address
-  amount: BigInt! # uint256
-  balance: BigInt! # uint256
+
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type ExecuteTransaction @entity(immutable: true) {
+type VoteCasted @entity(immutable: true) {
   id: Bytes!
-  owner: Bytes! # address
-  to: Bytes! # address
-  value: BigInt! # uint256
-  data: Bytes! # bytes
-  nonce: BigInt! # uint256
-  hash: Bytes! # bytes32
-  result: Bytes! # bytes
+  voter: Bytes! # address
+  firstChoice: BigInt! # uint256
+  voteHash: Bytes! # bytes32
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type OpenStream @entity(immutable: true) {
+type WinnerAnnounced @entity(immutable: true) {
   id: Bytes!
-  to: Bytes! # address
-  amount: BigInt! # uint256
-  frequency: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Owner @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  added: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Withdraw @entity(immutable: true) {
-  id: Bytes!
-  to: Bytes! # address
-  amount: BigInt! # uint256
-  reason: String! # string
+  candidateId: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

@@ -1,323 +1,170 @@
 [
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_chainId", "type": "uint256" },
-      { "internalType": "address[]", "name": "_owners", "type": "address[]" },
+      { "internalType": "string", "name": "_name", "type": "string" },
       {
-        "internalType": "uint256",
-        "name": "_signaturesRequired",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "_candidateAddress",
+        "type": "address"
       }
     ],
+    "name": "addCandidate",
+    "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "constructor"
+    "type": "function"
   },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "winnerId", "type": "uint256" }
+    ],
+    "name": "announceWinner",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "finalizeElection",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "firstChoice", "type": "uint256" },
+      { "internalType": "bytes32", "name": "rankedVoteHash", "type": "bytes32" }
+    ],
+    "name": "submitVote",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "candidateId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
-        "name": "to",
+        "name": "candidateAddress",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
       }
     ],
-    "name": "CloseStream",
+    "name": "CandidateAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "ElectionFinalized",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "address",
-        "name": "sender",
+        "name": "voter",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      }
-    ],
-    "name": "Deposit",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address payable",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "nonce",
+        "name": "firstChoice",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "bytes32",
-        "name": "hash",
+        "name": "voteHash",
         "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "result",
-        "type": "bytes"
       }
     ],
-    "name": "ExecuteTransaction",
+    "name": "VoteCasted",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "frequency",
+        "name": "candidateId",
         "type": "uint256"
       }
     ],
-    "name": "OpenStream",
+    "name": "WinnerAnnounced",
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "added",
-        "type": "bool"
-      }
-    ],
-    "name": "Owner",
-    "type": "event"
+    "inputs": [],
+    "name": "admin",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "reason",
-        "type": "string"
-      }
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "candidates",
+    "outputs": [
+      { "internalType": "uint256", "name": "voteCount", "type": "uint256" }
     ],
-    "name": "Withdraw",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "newSigner", "type": "address" },
-      {
-        "internalType": "uint256",
-        "name": "newSignaturesRequired",
-        "type": "uint256"
-      }
-    ],
-    "name": "addSigner",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "chainId",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address payable", "name": "to", "type": "address" }
-    ],
-    "name": "closeStream",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address payable", "name": "to", "type": "address" },
-      { "internalType": "uint256", "name": "value", "type": "uint256" },
-      { "internalType": "bytes", "name": "data", "type": "bytes" },
-      { "internalType": "bytes[]", "name": "signatures", "type": "bytes[]" }
-    ],
-    "name": "executeTransaction",
-    "outputs": [{ "internalType": "bytes", "name": "", "type": "bytes" }],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "_nonce", "type": "uint256" },
-      { "internalType": "address", "name": "to", "type": "address" },
-      { "internalType": "uint256", "name": "value", "type": "uint256" },
-      { "internalType": "bytes", "name": "data", "type": "bytes" }
-    ],
-    "name": "getTransactionHash",
-    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "isOwner",
+    "name": "electionFinalized",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "nonce",
+    "inputs": [
+      { "internalType": "uint256", "name": "candidateId", "type": "uint256" }
+    ],
+    "name": "getCandidateVoteCount",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "to", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" },
-      { "internalType": "uint256", "name": "frequency", "type": "uint256" }
+      { "internalType": "address", "name": "voterAddress", "type": "address" }
     ],
-    "name": "openStream",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "bytes32", "name": "_hash", "type": "bytes32" },
-      { "internalType": "bytes", "name": "_signature", "type": "bytes" }
-    ],
-    "name": "recover",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "oldSigner", "type": "address" },
-      {
-        "internalType": "uint256",
-        "name": "newSignaturesRequired",
-        "type": "uint256"
-      }
-    ],
-    "name": "removeSigner",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "getVoterVoteHash",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "signaturesRequired",
+    "name": "totalCandidates",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "address", "name": "to", "type": "address" }],
-    "name": "streamBalance",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "amount", "type": "uint256" },
-      { "internalType": "string", "name": "reason", "type": "string" }
-    ],
-    "name": "streamWithdraw",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "streams",
+    "name": "voters",
     "outputs": [
-      { "internalType": "uint256", "name": "amount", "type": "uint256" },
-      { "internalType": "uint256", "name": "frequency", "type": "uint256" },
-      { "internalType": "uint256", "name": "last", "type": "uint256" }
+      { "internalType": "bool", "name": "hasVoted", "type": "bool" },
+      { "internalType": "bytes32", "name": "voteHash", "type": "bytes32" }
     ],
     "stateMutability": "view",
     "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "newSignaturesRequired",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateSignaturesRequired",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  { "stateMutability": "payable", "type": "receive" }
+  }
 ]

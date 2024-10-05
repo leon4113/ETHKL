@@ -6,9 +6,9 @@ schema:
 dataSources:
   - kind: ethereum
     name: RankedChoiceVotingWithHash
-    network: sepolia
+    network: scroll-sepolia
     source:
-      address: "0xcb68dc49d69b9d4ed73cba460f03468100e8b9da"
+      address: "0xCb68Dc49d69b9d4ED73cBA460F03468100e8B9dA"
       abi: RankedChoiceVotingWithHash
       startBlock: 6876741
     mapping:
@@ -16,26 +16,20 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - CloseStream
-        - Deposit
-        - ExecuteTransaction
-        - OpenStream
-        - Owner
-        - Withdraw
+        - CandidateAdded
+        - ElectionFinalized
+        - VoteCasted
+        - WinnerAnnounced
       abis:
         - name: RankedChoiceVotingWithHash
           file: ./abis/RankedChoiceVotingWithHash.json
       eventHandlers:
-        - event: CloseStream(indexed address)
-          handler: handleCloseStream
-        - event: Deposit(indexed address,uint256,uint256)
-          handler: handleDeposit
-        - event: ExecuteTransaction(indexed address,address,uint256,bytes,uint256,bytes32,bytes)
-          handler: handleExecuteTransaction
-        - event: OpenStream(indexed address,uint256,uint256)
-          handler: handleOpenStream
-        - event: Owner(indexed address,bool)
-          handler: handleOwner
-        - event: Withdraw(indexed address,uint256,string)
-          handler: handleWithdraw
+        - event: CandidateAdded(uint256,address,string)
+          handler: handleCandidateAdded
+        - event: ElectionFinalized()
+          handler: handleElectionFinalized
+        - event: VoteCasted(address,uint256,bytes32)
+          handler: handleVoteCasted
+        - event: WinnerAnnounced(uint256)
+          handler: handleWinnerAnnounced
       file: ./src/ranked-choice-voting-with-hash.ts
