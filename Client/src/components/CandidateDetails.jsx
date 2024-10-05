@@ -1,9 +1,11 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import { BaseError,useWaitForTransactionReceipt,useWriteContract } from 'wagmi'
+import { abi } from '../../abi';
 
 function CandidateDetail() {
+  const { data: hash,error, isPending, writeContract } = useWriteContract()
   const location = useLocation();
   const navigate = useNavigate();
   const { candidate } = location.state || {};
@@ -17,19 +19,37 @@ function CandidateDetail() {
     }
   };
 
-  const handleAdd = async () => {
+  const handleAdd = async (e) => {
+    e.preventDefault();
+
     try {
+      // Retrieve the form data
+      const formData = new FormData(e.target);
+      const name = formData.get('name');
+      const walletAddress = formData.get('walletAddress');
+      writeContract({
+        address: '0xCb68Dc49d69b9d4ED73cBA460F03468100e8B9dA',
+        abi,
+        functionName: 'addCandidate',
+        args: [name, walletAddress],
+      })
+
       // Delete from Candidates collection
       await axios.delete(`http://localhost:3001/candidates/${candidate._id}`);
       
       // Add to FixedCandidates collection
-      await axios.post('http://localhost:3001/fixed-candidates/add-fixed-candidate', candidate);
-      
+      const newCandidate = { name, walletAddress, vision: candidate.vision };
+      await axios.post('http://localhost:3001/fixed-candidates/add-fixed-candidate', newCandidate);
+
       navigate('/candidate-list');
     } catch (error) {
       console.error('Error adding candidate to fixed list:', error);
     }
   };
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({
+      hash,
+    })
 
   const styles = {
     container: {
@@ -52,7 +72,7 @@ function CandidateDetail() {
     },
     logo: {
       fontSize: '24px',
-      fontWeight: 'bold', // This makes "Prevote" bold
+      fontWeight: 'bold',
     },
     walletInfo: {
       backgroundColor: '#d4e2f3',
@@ -62,7 +82,7 @@ function CandidateDetail() {
       color: '#333',
       textAlign: 'center',
       width: '300px',
-      border: '1px solid #ccc', // This adds a box around the wallet info
+      border: '1px solid #ccc',
     },
     formContainer: {
       backgroundColor: 'white',
@@ -104,7 +124,7 @@ function CandidateDetail() {
       width: '45%',
     },
     addButton: {
-      backgroundColor: 'green', // Explicitly set to green
+      backgroundColor: 'green',
       color: 'white',
       padding: '10px',
       borderRadius: '5px',
@@ -132,13 +152,14 @@ function CandidateDetail() {
 
       <h1 style={styles.h1}>Candidate Details</h1>
 
-      <div style={styles.formContainer}>
+      <form onSubmit={handleAdd} style={styles.formContainer}>
         <img src={candidate.imagePath} alt={candidate.name} style={styles.image} />
         
         <div style={styles.formGroup}>
           <label style={styles.formLabel}>Name</label>
           <input 
             type="text" 
+            name="name"
             value={candidate.name} 
             readOnly 
             style={styles.formInput}
@@ -149,6 +170,7 @@ function CandidateDetail() {
           <label style={styles.formLabel}>Wallet Address</label>
           <input 
             type="text" 
+            name="walletAddress"
             value={candidate.walletAddress} 
             readOnly 
             style={styles.formInput}
@@ -165,14 +187,20 @@ function CandidateDetail() {
         </div>
 
         <div style={styles.buttonGroup}>
-          <button onClick={handleReject} style={styles.rejectButton}>
+          <button type="button" onClick={handleReject} style={styles.rejectButton}>
             Reject
           </button>
-          <button onClick={handleAdd} style={styles.addButton}>
-            Add
+          <button disabled={isPending} type="submit" style={styles.addButton}>
+            {isPending ? 'Confirming...' : 'Add'}
           </button>
+          {hash && <div>Transaction Hash: {hash}</div>}
+          {isConfirming && <div>Waiting for confirmation...</div>}
+          {isConfirmed && <div>Transaction confirmed.</div>}
+          {error && (
+        <div>Error: {(error).shortMessage || error.message}</div>
+      )}
         </div>
-      </div>
+      </form>
     </div>
   );
 }

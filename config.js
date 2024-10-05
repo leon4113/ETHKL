@@ -1,11 +1,11 @@
 import { http, createConfig } from 'wagmi'
-import { base, mainnet, optimism } from 'wagmi/chains'
+import { mainnet, base, scrollSepolia } from 'wagmi/chains' // Import scrollSepolia
 import { injected, metaMask, safe, walletConnect } from 'wagmi/connectors'
 
 const projectId = 'a37743b17ea2878a673d4ea37671f149'
 
 export const config = createConfig({
-  chains: [mainnet, base],
+  chains: [scrollSepolia],  // Add scrollSepolia
   connectors: [
     // injected(),
     // walletConnect({ projectId }),
@@ -13,7 +13,6 @@ export const config = createConfig({
     // safe(),
   ],
   transports: {
-    [mainnet.id]: http(),
-    [base.id]: http(),
+    [scrollSepolia.id]: http(), // Add transport for scrollSepolia
   },
 })
