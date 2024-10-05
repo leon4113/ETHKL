@@ -20,8 +20,9 @@ type ElectionFinalized @entity(immutable: true) {
 
 type VoteCasted @entity(immutable: true) {
   id: Bytes!
-  commitment: Bytes! # bytes32
-  rankedVotes: [BigInt!]! # uint256[]
+  voter: Bytes! # address
+  firstChoice: BigInt! # uint256
+  commitment: Bytes! # bytes32 (voteHash in the contract)
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
