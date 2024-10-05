@@ -9,6 +9,8 @@ require('dotenv').config();
 // Use express.json() to parse JSON request bodies
 app.use(express.json());
 app.use(cors());
+app.use('/uploads', express.static('uploads'));
+
 
 // MongoDB connection
 mongoose.connect('mongodb+srv://mikaelowen2003:JrLN8aOZJ4DywrC1@cluster0.1rlhe.mongodb.net/', {

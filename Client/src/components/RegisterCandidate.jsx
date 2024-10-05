@@ -27,7 +27,7 @@ function RegisterCandidate({ addCandidate }) {
 
       const newCandidate = response.data;
       addCandidate(newCandidate);
-      navigate('/candidate-list');
+      navigate('/potential-candidate');
     } catch (error) {
       console.error('Error submitting candidate:', error);
       // Handle error (e.g., show error message to user)

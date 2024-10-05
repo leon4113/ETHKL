@@ -1,8 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-function PotentialCandidate({ candidates }) {
+
+function PotentialCandidate() {
   const navigate = useNavigate();
+
+  const [candidates, setCandidates] = useState([]);
+
+
+  useEffect(() => {
+    const fetchCandidates = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/candidates/potential-candidates');
+        setCandidates(response.data);
+      } catch (error) {
+        console.error('Error fetching candidates:', error);
+      }
+    };
+
+    fetchCandidates();
+  }, []);
 
   const styles = {
     container: {
