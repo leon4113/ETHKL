@@ -13,6 +13,7 @@ import { config } from '../../config';
 import { Account } from './components/account';
 import { WalletOptions } from './components/wallet-options';
 import LandingPage from './components/LandingPage';
+import RegisterSuccess from './components/register-success';
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ function App() {
             <Route path="/candidate-list" element={<CandidateList candidates={candidates} />} />
             <Route path="/potential-candidate" element={<PotentialCandidate candidates={candidates} />} />
             <Route path="/candidate-detail" element={<CandidateDetail candidates={candidates} />} />
+            <Route path ="/register-success" element = {<RegisterSuccess candidates={candidates}/>}/>
             <Route path="/voting" element={<VotingPage candidates={candidates} />} />
           </Routes>
         </Router>
