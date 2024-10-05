@@ -81,11 +81,11 @@ function CandidateList() {
       gap: '10px',
     },
     button: {
-      backgroundColor: candidates.length >= 3 ? 'green' : 'red',
+      backgroundColor: 'green',
       color: 'white',
       padding: '10px',
       borderRadius: '5px',
-      cursor: candidates.length >= 3 ? 'pointer' : 'not-allowed',
+      cursor: 'pointer',
       border: 'none',
       marginRight: '10px',
     },
@@ -161,31 +161,14 @@ function CandidateList() {
           <p>Candidate Count: {candidates.length}</p>
           <button
             style={styles.button}
-            onClick={() => {
-              if (candidates.length >= 3) {
-                alert('Voting started');
-              }
-            }}
-            disabled={candidates.length < 3}
+            onClick={() => navigate('/voting-result')}
           >
-            {candidates.length < 3 ? 'Minimal 3 Candidate' : ' Vote '}
+            Check Result
           </button>
         </div>
 
           {/* Notice box with the button to create more candidates */}
-          <div style={styles.noticeBox}>
-            <div style={styles.noticeText}>
-              {candidates.length < 3
-                ? 'You still cannot publish your vote. Create more candidates by pressing the button below.'
-                : 'Now you can publish your vote. However, you can still add more candidates using the button below.'}
-            </div>
-            <button
-              style={styles.noticeButton}
-              onClick={() => navigate('/register-candidate')}
-            >
-              Create More Candidate
-            </button>
-          </div>
+          
         </div>
       </div>
     </div>
