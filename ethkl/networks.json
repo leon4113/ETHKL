@@ -1,0 +1,8 @@
+{
+  "sepolia": {
+    "RankedChoiceVotingWithHash": {
+      "address": "0xcb68dc49d69b9d4ed73cba460f03468100e8b9da",
+      "startBlock": 6876741
+    }
+  }
+}
