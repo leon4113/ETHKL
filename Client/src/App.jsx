@@ -11,6 +11,7 @@ import CandidateList from './components/CandidateList';
 import PotentialCandidate from './components/PotentialCandidate';
 import CandidateDetail from './components/CandidateDetails';
 import VotingPage from './components/VotingPage';
+import VotingResult from './components/VotingResult';
 import { Account } from './components/account';
 import { WalletOptions } from './components/wallet-options';
 import LandingPage from './components/LandingPage';
@@ -57,6 +58,7 @@ function App() {
             <Route path="/candidate-detail" element={<CandidateDetail candidates ={candidates} isConnected={isConnected} walletAddress={walletAddress} />} />
             <Route path="/voting" element={<VotingPage isConnected={isConnected} walletAddress={walletAddress} />} />
             <Route path="/register-success" element={<RegisterSuccess isConnected={isConnected} walletAddress={walletAddress} />} />
+            <Route path="/voting-result" element={<VotingResult candidates={candidates} isConnected={isConnected} walletAddress={walletAddress} />} />
           </Routes>
         </Router>
       </QueryClientProvider>
