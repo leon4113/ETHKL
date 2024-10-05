@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
+import { useEffect, useState } from "react";
 import voteImage from '../assets/vote.jpg';  // Correct path to the image
 
 function Homepage() {
@@ -103,6 +104,67 @@ function Homepage() {
     },
   };
 
+  const [walletAddress, setWalletAddress] = useState("");
+
+  useEffect(() => {
+    getCurrentWalletConnected();
+    addWalletListener();
+  }, [walletAddress]);
+
+  // Function to connect to MetaMask
+  const connectWallet = async () => {
+    if (typeof window != "undefined" && typeof window.ethereum != "undefined") {
+      try {
+        /* MetaMask is installed */
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        setWalletAddress(accounts[0]);
+        console.log(accounts[0]);
+      } catch (err) {
+        console.error(err.message);
+      }
+    } else {
+      /* MetaMask is not installed */
+      console.log("Please install MetaMask");
+    }
+  };
+
+  const getCurrentWalletConnected = async () => {
+    if (typeof window != "undefined" && typeof window.ethereum != "undefined") {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_accounts",
+        });
+        if (accounts.length > 0) {
+          setWalletAddress(accounts[0]);
+          console.log(accounts[0]);
+        } else {
+          console.log("Connect to MetaMask using the Connect button");
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
+    } else {
+      /* MetaMask is not installed */
+      console.log("Please install MetaMask");
+    }
+  };
+
+  const addWalletListener = async () => {
+    if (typeof window != "undefined" && typeof window.ethereum != "undefined") {
+      window.ethereum.on("accountsChanged", (accounts) => {
+        setWalletAddress(accounts[0]);
+        console.log(accounts[0]);
+      });
+    } else {
+      /* MetaMask is not installed */
+      setWalletAddress("");
+      console.log("Please install MetaMask");
+    }
+  };
+
+
   return (
     <div style={styles.appContainer}>
       {/* Header */}
@@ -127,7 +189,16 @@ function Homepage() {
           <p style={styles.description}>
             One-person-one-vote doesn’t show how much someone cares about an issue. To vote, you need to connect your wallet.
           </p>
-          <div style={styles.buttonGroup}>
+          <div style={styles.buttonGroup} onClick={connectWallet}>
+            <button style={styles.connectButton}>
+            {walletAddress && walletAddress.length > 0
+                    ? `Connected: ${walletAddress.substring(
+                        0,
+                        6
+                      )}...${walletAddress.substring(38)}`
+                    : "Connect Wallet"}
+            </button>
+            <span style={styles.orText}>OR</span>
             <button style={styles.worldcoinButton}>Login with Worldcoin</button>
           </div>
         </div>

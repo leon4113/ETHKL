@@ -16,7 +16,7 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isVerified, setIsVerified] = useState(false); // Add isVerified state
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (walletAddress) {
       console.log('Navigating to /vote with address:', walletAddress); // Debug log
       navigate('/vote'); // Navigate once the wallet is connected
@@ -75,7 +75,6 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
     console.log('Confirmed rankings:', rankings);
     setShowConfirmation(false);
     setRankings({});
-    // Add any other logic after confirming the vote
   };
 
   const handleReset = () => {
