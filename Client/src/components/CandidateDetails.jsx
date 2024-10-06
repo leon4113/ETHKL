@@ -34,7 +34,7 @@ function CandidateDetail() {
         address: '0xf78fc0F251709F6FE8F0D350339CCbBDA50b4435',
         abi,
         functionName: 'addCandidate',
-        args: [name, walletAddress, visionMission]
+        args: [name, walletAddress, visionMission].
       });
   
       // Check if the transaction was successful
@@ -42,7 +42,7 @@ function CandidateDetail() {
       await axios.delete(`http://localhost:3001/candidates/${candidate._id}`);
       
       // Add to FixedCandidates collection
-      const newCandidate = { name, walletAddress, visionMission: candidate.visionMission };
+      const newCandidate = { name, walletAddress, vision: candidate.vision };
       await axios.post('http://localhost:3001/fixed-candidates/add-fixed-candidate', newCandidate);
 
       // Navigate to the candidate list only after successful transaction and operations

@@ -1,30 +1,5 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import { ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client';
-
-// Define the API URL
-const APIURL = 'https://api.studio.thegraph.com/query/90815/eth-final/v0.0.4';
-
-// Create the Apollo Client
-const client = new ApolloClient({
-  uri: APIURL,
-  cache: new InMemoryCache(),
-});
-
-// Define your GraphQL query
-const VOTE_RESULTS_QUERY = gql`
-  query {
-    candidateAddeds(first: 5) {
-      id
-      candidateId
-      name
-    }
-    voteCasteds(first: 100) {
-      commitment
-      rankedVotes
-    }
-  }
-`;
 
 const VotingResult = () => {
   const { loading, error, data } = useQuery(VOTE_RESULTS_QUERY, { client });
@@ -67,8 +42,8 @@ const VotingResult = () => {
       </header>
       <h1 style={styles.title}>Voting Result</h1>
       <div style={styles.resultsContainer}>
-        {sortedCandidates.map((candidate, index) => (
-          <div key={candidate.id} style={styles.resultRow}>
+        {candidates.map((candidate, index) => (
+          <div key={index} style={styles.resultRow}>
             <div style={styles.imagePlaceholder}>
               {/* Image Placeholder */}
             </div>

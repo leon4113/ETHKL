@@ -12,7 +12,7 @@ import { keccak256, toUtf8Bytes } from 'ethers';
 
 
 // Define the API URL
-const APIURL = 'https://api.studio.thegraph.com/query/90815/eth-final/v0.0.4';
+const APIURL = 'https://api.studio.thegraph.com/query/90815/eth-kl2/v0.0.9';
 
 
 // Create the Apollo Client
@@ -29,7 +29,12 @@ const CANDIDATES_QUERY = gql`
       candidateId
       candidateAddress
       name
-      visionMission
+    }
+    electionFinalizeds(first: 5) {
+      id
+      blockNumber
+      blockTimestamp
+      transactionHash
     }
   }
 `;
