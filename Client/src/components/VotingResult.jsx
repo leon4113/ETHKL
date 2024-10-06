@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client';
 
