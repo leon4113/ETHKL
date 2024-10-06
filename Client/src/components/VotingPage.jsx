@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogAction } from "@/components/ui/alert-dialog";
@@ -8,8 +9,11 @@ import { abi } from '../../abi';
 import axios from 'axios';
 import { keccak256, toUtf8Bytes } from 'ethers';
 
+
+
 // Define the API URL
 const APIURL = 'https://api.studio.thegraph.com/query/90815/eth-final/v0.0.4';
+
 
 // Create the Apollo Client
 const client = new ApolloClient({
@@ -30,13 +34,15 @@ const CANDIDATES_QUERY = gql`
   }
 `;
 
+
 const VotingPage = ({ walletAddress, disconnectWallet }) => {
-  const { data: hash, isPending, writeContract } = useWriteContract();
+  const { data: hash,isPending, writeContract } = useWriteContract()
   const navigate = useNavigate();
   const [rankings, setRankings] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
-
+  
+  
   // Use the useQuery hook to fetch data
   const { loading, error, data } = useQuery(CANDIDATES_QUERY, { client });
 
@@ -67,11 +73,11 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
       const rankedVotes = Object.entries(rankings)
         .sort(([, rankA], [, rankB]) => rankA - rankB)
         .map(([candidateId]) => BigInt(candidateId));
-      if (!walletAddress) {
-        console.error('Wallet address is not available');
-        // You might want to show an error message to the user here
-        return;
-      }
+        if (!walletAddress) {
+          console.error('Wallet address is not available');
+          // You might want to show an error message to the user here
+          return;
+        }
       // Hash the wallet address using keccak256
       const commitment = keccak256(toUtf8Bytes(walletAddress));
 
@@ -90,7 +96,7 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({
       hash,
-    });
+    })
 
   const verifyProof = async (proof) => {
     try {
@@ -99,7 +105,7 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (response.status === 200) {
         console.log('Verification successful:', response.data);
         return response.data.verified;
@@ -132,10 +138,6 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
   const handleDisconnect = () => {
     disconnectWallet();
     navigate('/');
-  };
-
-  const handleViewResults = () => {
-    navigate('/voting-result');
   };
 
   return (
@@ -219,7 +221,7 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
 
           {/* Submit Button */}
           <button
-            className={`bg-green-500 text-white px-4 py-2 rounded-lg text-lg sm:text-xl mb-4 ${
+            className={`bg-green-500 text-white px-4 py-2 rounded-lg text-lg sm:text-xl ${
               !isVerified ? 'opacity-50 cursor-not-allowed' : ''
             }`}
             onClick={handleSubmit}
@@ -229,14 +231,6 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
             {hash && <div>Transaction Hash: {hash}</div>}
             {isConfirming && <div>Waiting for confirmation...</div>}
             {isConfirmed && <div>Transaction confirmed.</div>}
-          </button>
-
-          {/* New button for viewing results */}
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg text-lg sm:text-xl"
-            onClick={handleViewResults}
-          >
-            View Voting Results
           </button>
         </main>
 
