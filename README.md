@@ -16,7 +16,7 @@ Introucing **Prevote**, an innovative platform designed to revolutionize how we 
 ### **Deployed on Scroll**
 - **Scalable and Cost-Effective**: Experience lightning-fast transactions with Scroll, a zk-rollup on Ethereum that ensures efficiency and low costs.
 
-## Technology Stack
+## Tech Stack
 
 ### Smart Contracts:
 - **Solidity**: Used to implement the Quadratic Voting and Ranked-Choice Voting mechanisms.
