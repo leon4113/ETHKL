@@ -1,29 +1,20 @@
+# Anonymous Real-Time Preferential Voting DApp on Scroll
 
-# Quadratic and Ranked Choice Voting DApp
+Introucing **Prevote**, an innovative platform designed to revolutionize how we express our preferences in voting! Built on the Scroll network, this decentralized application empowers users to actively participate in democratic processes using **Preferential Voting**  mechanisms.
 
-## Overview
+## 🌟 Features
 
-This decentralized application (DApp) is built to implement **Quadratic Voting** and **Ranked-Choice Voting** mechanisms on the **Scroll** network. The platform enables users to participate in voting processes where they can express the intensity of their preferences (Quadratic Voting) or rank candidates in order of preference (Ranked-Choice Voting). 
+### **Preferential Voting**
+- **Express Your Preference**: Preferential voting is an electoral system that allows voters to rank candidates in order of preference rather than choosing just one. This method enables voters to express their preferences more fully and can lead to outcomes that better reflect the overall sentiment of the electorate.
 
-The project uses **Worldcoin** for user authentication to ensure **proof of humanity**, preventing Sybil attacks, and **The Graph** for efficient querying and real-time data fetching.
+### **Worldcoin Integration**
+- **Proof of Humanity**: Say goodbye to Sybil attacks! Our integration with Worldcoin guarantees that each voter is unique, enhancing the integrity of the voting process.
 
-### Features
-1. **Quadratic Voting**:
-   - Voters allocate a number of votes to each candidate. The cost of each additional vote increases quadratically, ensuring fairer representation.
-   
-2. **Ranked-Choice Voting**:
-   - Voters rank candidates in order of preference. The votes are transferred and reallocated until a candidate receives more than 50% of the vote.
+### **The Graph for Real-Time Data**
+- **Effortless Querying**: Utilizing The Graph, our platform provides seamless, real-time access to vote results, candidate information, and voter activity—keeping you updated every step of the way!
 
-3. **Worldcoin Integration**:
-   - Voter authentication is handled by **Worldcoin** to ensure that each voter is unique.
-
-4. **The Graph**:
-   - Used for real-time querying of vote results, candidate data, and voter activity.
-
-5. **Deployed on Scroll**:
-   - The DApp is deployed on **Scroll**, a zk-rollup on Ethereum for efficient, low-cost, and scalable transactions.
-
----
+### **Deployed on Scroll**
+- **Scalable and Cost-Effective**: Experience lightning-fast transactions with Scroll, a zk-rollup on Ethereum that ensures efficiency and low costs.
 
 ## Technology Stack
 
@@ -33,11 +24,12 @@ The project uses **Worldcoin** for user authentication to ensure **proof of huma
 
 ### Frontend:
 - **React.js**: For building the user interface and enabling users to interact with the voting system.
-- **Web3.js** / **Ethers.js**: For interacting with the blockchain, deploying contracts, and signing transactions.
+- **Wagmi**: For interacting with the blockchain, deploying contracts, and signing transactions.
 
 ### Backend:
 - **Worldcoin**: Provides proof of humanity for user authentication.
 - **The Graph**: Used for querying and indexing data from smart contracts.
+- **Express JS**: Used for routing API endpoints
 
 ---
 
@@ -152,13 +144,12 @@ This will start the frontend, and you can access the voting system at `http://lo
 1. **Voter Authentication**:
    - Users must authenticate using **Worldcoin** to prove they are unique humans.
 
-2. **Quadratic Voting**:
+2. **Preferential Voting**:
    - After authentication, voters are given a fixed number of voting credits to allocate to candidates. Each additional vote costs quadratically more.
    - Submit votes, and results will be calculated and displayed in real-time using **The Graph**.
 
 3. **Ranked-Choice Voting**:
    - Voters rank all candidates in order of preference.
-   - When the voting round closes, votes are reallocated until a candidate with a majority is found.
 
 4. **Real-Time Results**:
    - Results are displayed in real-time using **The Graph**, ensuring transparency and integrity in vote counting.
@@ -167,7 +158,7 @@ This will start the frontend, and you can access the voting system at `http://lo
 
 ## Testing
 
-You can test the smart contracts using **Hardhat**. Predefined test scripts are provided for both **Quadratic Voting** and **Ranked-Choice Voting**.
+You can test the smart contracts using **Hardhat** or **Foundry**. Predefined test scripts are provided 
 
 To run the tests:
 
@@ -197,6 +188,3 @@ This project is licensed under the MIT License.
 
 ---
 
-## Contact
-
-For any inquiries or issues, please contact [your-email@domain.com].
