@@ -1,11 +1,61 @@
 import React from 'react';
+import { ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client';
+
+// Define the API URL
+const APIURL = 'https://api.studio.thegraph.com/query/90815/eth-final/v0.0.4';
+
+// Create the Apollo Client
+const client = new ApolloClient({
+  uri: APIURL,
+  cache: new InMemoryCache(),
+});
+
+// Define your GraphQL query
+const VOTE_RESULTS_QUERY = gql`
+  query {
+    candidateAddeds(first: 5) {
+      id
+      candidateId
+      name
+    }
+    voteCasteds(first: 100) {
+      commitment
+      rankedVotes
+    }
+  }
+`;
 
 const VotingResult = () => {
-  const candidates = [
-    { name: 'Name 1', votes: 25 },
-    { name: 'Name 2', votes: 58 },
-    { name: 'Name 3', votes: 16 },
-  ];
+  const { loading, error, data } = useQuery(VOTE_RESULTS_QUERY, { client });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  // Process the vote data
+  const voteResults = {};
+  if (data) {
+    // Initialize vote count for each candidate
+    data.candidateAddeds.forEach(candidate => {
+      voteResults[candidate.candidateId] = 0;
+    });
+
+    // Count votes
+    data.voteCasteds.forEach(vote => {
+      // Assuming the first vote in rankedVotes is the top choice
+      const topChoice = vote.rankedVotes[0];
+      if (voteResults.hasOwnProperty(topChoice)) {
+        voteResults[topChoice]++;
+      }
+    });
+  }
+
+  // Sort candidates by vote count
+  const sortedCandidates = data.candidateAddeds
+    .map(candidate => ({
+      ...candidate,
+      votes: voteResults[candidate.candidateId]
+    }))
+    .sort((a, b) => b.votes - a.votes);
 
   return (
     <div style={styles.container}>
@@ -14,8 +64,8 @@ const VotingResult = () => {
       </header>
       <h1 style={styles.title}>Voting Result</h1>
       <div style={styles.resultsContainer}>
-        {candidates.map((candidate, index) => (
-          <div key={index} style={styles.resultRow}>
+        {sortedCandidates.map((candidate, index) => (
+          <div key={candidate.id} style={styles.resultRow}>
             <div style={styles.imagePlaceholder}>
               {/* Image Placeholder */}
             </div>
