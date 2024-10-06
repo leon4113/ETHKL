@@ -31,7 +31,7 @@ const VotingResult = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  // Process the vote data
+  // Process the vote data using Borda count
   const voteResults = {};
   if (data) {
     // Initialize vote count for each candidate
@@ -39,23 +39,25 @@ const VotingResult = () => {
       voteResults[candidate.candidateId] = 0;
     });
 
-    // Count votes
+    // Count votes using Borda count
     data.voteCasteds.forEach(vote => {
-      // Assuming the first vote in rankedVotes is the top choice
-      const topChoice = vote.rankedVotes[0];
-      if (voteResults.hasOwnProperty(topChoice)) {
-        voteResults[topChoice]++;
-      }
+      const totalCandidates = vote.rankedVotes.length;
+      vote.rankedVotes.forEach((candidateId, index) => {
+        if (voteResults.hasOwnProperty(candidateId)) {
+          // Points are assigned in reverse order: last place gets 1 point, second-to-last gets 2 points, etc.
+          voteResults[candidateId] += totalCandidates - index;
+        }
+      });
     });
   }
 
-  // Sort candidates by vote count
+  // Sort candidates by total points
   const sortedCandidates = data.candidateAddeds
     .map(candidate => ({
       ...candidate,
-      votes: voteResults[candidate.candidateId]
+      points: voteResults[candidate.candidateId]
     }))
-    .sort((a, b) => b.votes - a.votes);
+    .sort((a, b) => b.points - a.points);
 
   return (
     <div style={styles.container}>
@@ -70,7 +72,7 @@ const VotingResult = () => {
               {/* Image Placeholder */}
             </div>
             <div style={styles.name}>{candidate.name}</div>
-            <div style={styles.votes}>{candidate.votes}</div>
+            <div style={styles.points}>{candidate.points} points</div>
           </div>
         ))}
       </div>
@@ -153,5 +155,15 @@ const styles = {
     fontSize: '16px',
   },
 };
+
+const additionalStyles = {
+  points: {
+    fontSize: '18px',
+    fontWeight: 'bold',
+  },
+};
+
+// Merge additionalStyles into existing styles
+Object.assign(styles, additionalStyles);
 
 export default VotingResult;
