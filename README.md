@@ -21,6 +21,7 @@ Introucing **Prevote**, an innovative platform designed to revolutionize how we 
 ### Smart Contracts:
 - **Solidity**: Used to implement the Quadratic Voting and Ranked-Choice Voting mechanisms.
 - **Scroll**: Deployed on the Scroll zk-rollup network for scalable, efficient blockchain transactions.
+- **Scroll Contract: https://sepolia.scrollscan.com/address/0xf78fc0f251709f6fe8f0d350339ccbbda50b4435.
 
 ### Frontend:
 - **React.js**: For building the user interface and enabling users to interact with the voting system.
