@@ -14,7 +14,7 @@ const client = new ApolloClient({
 // Define your GraphQL query
 const VOTE_RESULTS_QUERY = gql`
   query {
-    candidateAddeds(first: 5) {
+    candidateAddeds(first: 100) {
       id
       candidateId
       name

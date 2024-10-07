@@ -20,7 +20,7 @@ const client = new ApolloClient({
 // Define your GraphQL query
 const CANDIDATES_QUERY = gql`
   query {
-    candidateAddeds(first: 5) {
+    candidateAddeds(first: 100) {
       id
       candidateId
       candidateAddress
@@ -201,16 +201,15 @@ const VotingPage = ({ walletAddress, disconnectWallet }) => {
 
           {/* Worldcoin IDKit Widget */}
           <IDKitWidget
-            app_id="app_0b73807a5c00a0829bc90c85ad7f8c72"
-            action="anonymous-vote"
+            app_id="app_26844c64f6d9eb0cb7b64fb79961b5e5"
+            action="votevotevote"
+            false
             verification_level={VerificationLevel.Device}
             handleVerify={verifyProof}
-            onSuccess={onSuccess}
-          >
+            onSuccess={onSuccess}>
             {({ open }) => (
               <button
                 onClick={open}
-                className="w-full bg-black text-white py-3 text-xl mb-5"
               >
                 Verify with World ID
               </button>
