@@ -1,5 +1,30 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
+import { ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client';
+
+// Define the API URL
+const APIURL = 'https://api.studio.thegraph.com/query/90815/eth-final/v0.0.4';
+
+// Create the Apollo Client
+const client = new ApolloClient({
+  uri: APIURL,
+  cache: new InMemoryCache(),
+});
+
+// Define your GraphQL query
+const VOTE_RESULTS_QUERY = gql`
+  query {
+    candidateAddeds(first: 100) {
+      id
+      candidateId
+      name
+    }
+    voteCasteds(first: 100) {
+      commitment
+      rankedVotes
+    }
+  }
+`;
 
 const VotingResult = () => {
   const { loading, error, data } = useQuery(VOTE_RESULTS_QUERY, { client });
