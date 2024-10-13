@@ -13,7 +13,7 @@ contract RankedChoiceVotingWithHash {
     mapping(uint256 => Candidate) public candidates;  // Candidate ID -> Candidate details
     mapping(bytes32 => bool) public commitments;      // Track used commitments (hashed voter addresses)
 
-    event CandidateAdded(uint256 candidateId, address candidateAddress, string name, string vision, string mission);
+    event CandidateAdded(uint256 candidateId, address candidateAddress, string name, string visionMission);
     event VoteCasted(bytes32 commitment, uint256[] rankedVotes);  // Emit full ranked votes in the event
     event ElectionFinalized();
     event WinnerAnnounced(uint256 candidateId);
@@ -32,20 +32,19 @@ contract RankedChoiceVotingWithHash {
         admin = msg.sender;
     }
 
-    // Admin adds confirmed candidates and logs their vision & mission via events (no on-chain storage)
+    // Admin adds confirmed candidates and logs their vision & mission in one place (visionMission)
     function addCandidate(
         string memory _name,
         address _candidateAddress,
-        string memory _vision,
-        string memory _mission
+        string memory _visionMission
     ) public onlyAdmin {
         require(bytes(_name).length > 0, "Name cannot be empty");
         require(_candidateAddress != address(0), "Invalid address");
 
-        // Emit candidate details along with vision and mission in an event
-        emit CandidateAdded(totalCandidates, _candidateAddress, _name, _vision, _mission);
+        // Emit candidate details along with vision and mission combined in one field
+        emit CandidateAdded(totalCandidates, _candidateAddress, _name, _visionMission);
 
-        totalCandidates++;
+        totalCandidates++; // Increment candidate count
     }
 
     // Voter submits their full ranked votes with off-chain hashed commitment (address hash)
